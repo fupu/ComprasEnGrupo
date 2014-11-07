@@ -8,19 +8,30 @@ class Service_model extends CI_Model
 	}
 
 	
-	function get_list_promo()
+	function getPromociones()
 	{
-		
-		$this->db->order_by('id_promocion', 'RANDOM');
-		$this->db->limit(5);
+		//$this->db->get('promocion');
+		$this->db->order_by('fecha_creacion', 'asc');
+		//$this->db->limit(5);
 		$query = $this->db->get('promocion');
 
+		    
 		$result = $query->result_array();
-		
+
 		return $result;
 	}
-	
-			
+	function getImagenes()
+	{
+		//$this->db->get('promocion');
+		//$this->db->order_by('fecha_creacion', 'asc');
+		//$this->db->limit(5);
+		$query = $this->db->get('imagen');
+
+		    
+		$result = $query->result_array();
+
+		return $result;
+	}		
 	/*function get_list($id_categoria)
 	{
 		
@@ -35,23 +46,71 @@ class Service_model extends CI_Model
 	}*/
 
 	
-	function get_categoria()
+	function getCategorias()
 	{
-		$this->db->select('categoria.id_categoria, categoria.categoria, categoria.imagen');
-        $this->db->from('categoria');
-        $this->db->order_by('id_categoria');
+		/*$this->db->select('*');
+        $this->db->from('categoria');*/
 
 		/*$this->db->join('list', 'categoria.id_categoria = list.list_category_id','left');
         $this->db->group_by('category.category_name');*/
 		 
-		$query = $this->db->get();
+		$query = $this->db->get('categoria');
 		
 		$result = $query->result_array();
 		
 		return $result;
 	}
 
+	function getUsers()
+	{
+		//$this->db->select('*');
+        //$this->db->from('usuario');
 
+		/*$this->db->join('list', 'categoria.id_categoria = list.list_category_id','left');
+        $this->db->group_by('category.category_name');*/
+		 
+		$query = $this->db->get('usuario');
+		
+		$result = $query->result_array();
+		
+		return $result;
+	}
+	function getUser($email){
+		//$this->db->select('*');
+        //$this->db->from('usuario');
+
+		/*$this->db->join('list', 'categoria.id_categoria = list.list_category_id','left');
+        $this->db->group_by('category.category_name');*/
+        if($email != 'undefined'){
+			$this->db->where('email', $email);
+		}
+
+        $this->db->from('usuario');
+
+		$query = $this->db->get();
+
+		$result = $query->result_array();
+
+		return $result;
+	}
+
+	function registerUser($email,$password,$nombre){
+        $datos = array(
+            'nombre'        =>      $nombre,
+            'email'         =>      $email,
+            'password'      =>      $password
+        );
+        $this->db->where('email',$email);
+        $this->db->insert('usuario',$datos);
+        /*$check_exists = $this->db->get("usuario");
+        if($check_exists->num_rows() == 0){
+        	return true;
+            
+            return true;
+        }else{
+            return false;
+        }*/
+    }
 	function get_detalles_promo($filter)
 	{
 		if($filter != 'undefined'){
@@ -67,7 +126,6 @@ class Service_model extends CI_Model
 		
 		return $result;
 	}
-
 	/*function get_bookmark($id)
 	{
 		

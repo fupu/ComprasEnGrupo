@@ -14,7 +14,7 @@
 | path to your installation.
 |
 */
-$config['base_url']	= '';
+$config['base_url']	= 'http://www.fupudev.com/comprasengrupo/ComprasEnGrupo/';
 
 /*
 |--------------------------------------------------------------------------
@@ -126,7 +126,7 @@ $config['subclass_prefix'] = 'MY_';
 | DO NOT CHANGE THIS UNLESS YOU FULLY UNDERSTAND THE REPERCUSSIONS!!
 |
 */
-$config['permitted_uri_chars'] = 'a-z 0-9~%.:_\-';
+$config['permitted_uri_chars'] = 'a-z 0-9~%.:_\-@';
 
 
 /*
@@ -224,7 +224,7 @@ $config['cache_path'] = '';
 | MUST set an encryption key.  See the user guide for info.
 |
 */
-$config['encryption_key'] = '';
+$config['encryption_key'] = '97tuytgu5t6UTYRF67Oro6rRtyRYTRYYruydsrtFHJGF76754354ruyfgvjhGUYRTUYFhjgfyTTYDTYdyt';
 
 /*
 |--------------------------------------------------------------------------

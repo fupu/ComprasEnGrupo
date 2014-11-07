@@ -1,0 +1,12 @@
+<ion-view title="Promociones">
+  <ion-content class="padding">
+  <div class="list">
+
+    <a ng-repeat="promocion in promociones" class="item item-thumbnail-left" href="#/tab/promociones/detalles">
+      <img src="http://www.fupudev.com/comprasengrupo/ComprasEnGrupo/admin/imagenes/1{{promocion.id_promocion}}.jpg">
+      <h2>{{promocion.producto}}</h2>
+      <p>{{promocion.descripcion}}</p>
+    </a>
+</div>
+  </ion-content>
+</ion-view>

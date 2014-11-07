@@ -1,0 +1,41 @@
+<ion-view title="Registro">
+
+<div class="modal">
+
+    <!-- Modal content area -->
+    <ion-content>
+      <form name="registerUserForm">
+      <div ng-show="flash_error">
+                <div data-alert class="alert-box alert round">{{ flash_error }}</div>
+            </div>
+ 
+            <div ng-show="flash_success">
+                <div data-alert class="alert-box success round">{{ flash_success }}</div>
+            </div>
+        <div class="list">
+          <label class="item item-input">
+            <span class="input-label">Nombre</span>
+            <input ng-required="true" type="text" placeholder="Nombre" ng-model="user.nombre">
+          </label>
+        </div>
+        <div class="list">
+          <label class="item item-input">
+            <span class="input-label">Email</span>
+            <input ng-required="true" type="email" placeholder="Email" ng-model="user.email">
+          </label>
+        </div>
+        <div class="list">
+          <label class="item item-input">
+            <span class="input-label">Contraseña</span>
+            <input ng-required="true" type="password" placeholder="Password" ng-model="user.password">
+          </label>
+        </div>
+        <div class="padding">
+          <button ng-disabled="!registerUserForm.$valid" type="submit" class="button button-block button-positive" ng-click="registerUser(user)">Registrar</button>
+        </div>
+      </form>
+
+    </ion-content>
+
+  </div>
+</ion-view>

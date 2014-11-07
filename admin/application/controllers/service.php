@@ -30,11 +30,11 @@ class Service extends CI_Controller
 	
 
 	//Get request category
-	public function get_categoria()
+	public function categorias_get()
 	{		
 		$this->load->model('service_model');
 		
-		$query = $this->service_model->get_categoria();
+		$query = $this->service_model->getCategorias();
 
 		header("Access-Control-Allow-Origin: *"); 
 		header('Access-Control-Allow-Methods: GET, POST');		

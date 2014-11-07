@@ -1,0 +1,26 @@
+<ion-view title="Cuenta">
+  <ion-content class="padding">
+  	<form name="loginUserForm">
+    <fieldset>
+        <legend>Formulario de login con AngularJS y codeigniter</legend>
+ 
+        <div class="row">
+            <div ng-show="flash">
+                <div data-alert class="alert-box alert round">{{ flash }}</div>
+            </div>
+            <div class="large-12 columns">
+                <label>Email</label>
+                <input type="email" required placeholder="Introduce tu email" ng-model="user.email">
+            </div>
+            <div class="large-12 columns">
+                <label>Password</label>
+                <input type="password" required placeholder="Introduce tu password" ng-model="user.password">
+            </div>
+ 
+            <button type="submit" ng-disabled="!loginUserForm" ng-click="login(user)" class="button expand round">Login</button>
+        </div>
+ 
+    </fieldset>
+</form>
+  </ion-content>
+</ion-view>
