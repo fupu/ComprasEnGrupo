@@ -1,5 +1,9 @@
 <ion-view title="Buscar">
   <ion-content class="padding">
-    <h1>Buscar</h1>
+      <div class="list">
+      	<a ng-repeat="categoria in categorias" class="item" >
+      		<h2>{{categoria.categoria}}</h2>
+    	</a>
+      </div>
   </ion-content>
 </ion-view>

@@ -1,35 +1,35 @@
-
-
 angular.module('starter.services', [])
 
 /**
  * A simple example service that returns some data.
  */
-.factory('Promociones', function() {
+.factory('Promociones', function($http) {
+   var promociones;
+    
   // Might use a resource here that returns a JSON array
+$http.get('http://www.fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/example/promociones/').
+    success(function(data, status, headers, config) {
+       promociones = data;
+    }).
+    error(function(data, status, headers, config) {
+      // log error
+    });
 
-  // Some fake testing data
-  var promociones = [
-    { id: 0, name: 'Scruff McGruff' },
-    { id: 1, name: 'G.I. Joe' },
-    { id: 2, name: 'Miss Frizzle' },
-    { id: 3, name: 'Ash Ketchum' }
-  ];
 
   return {
     all: function() {
       return promociones;
     },
-    get: function(promocionId) {
+    get: function(id_promocion) {
       // Simple index lookup
-      return promociones[promocionId];
+      return promociones[id_promocion];
     }
   }
 });
 
-var setUrl = "http://fupudev.com/comprasengrupo/";
+var setUrl = "http://www.fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php";
 
-var urlService = setUrl+"index.php/";
+var urlService = setUrl+"/api/example";
 
 // GET HOME DATA    
 function getRecipeHome(){

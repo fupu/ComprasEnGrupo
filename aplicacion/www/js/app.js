@@ -51,20 +51,20 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
       templateUrl: "templates/tabs.html"
     })
 
-   .state('tab.login', {
-      url: '/login',
+   .state('tab.cuenta-login', {
+      url: '/cuenta/login',
       views: {
-        'tab-login': {
+        'tab-cuenta': {
           templateUrl: 'templates/tab-login.html',
           controller: 'loginController'
         }
       }
     })
 
-   .state('tab.register', {
-      url: '/register',
+   .state('tab.cuenta-register', {
+      url: '/cuenta/register',
       views: {
-        'tab-register': {
+        'tab-cuenta': {
           templateUrl: 'templates/register.html',
           controller: 'registerController'
         }
@@ -79,6 +79,16 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
         'tab-promociones': {
           templateUrl: 'templates/tab-promociones.html',
           controller: 'PromocionesCtrl'
+        }
+      }
+    })
+
+    .state('tab.promocion-detalle', {
+      url: '/promociones/:id_promocion',
+      views: {
+        'tab-promociones': {
+          templateUrl: 'templates/promocion-detalle.html',
+          controller: 'PromocionDetallesCtrl'
         }
       }
     })
@@ -102,18 +112,9 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
         }
       }
     })
-    .state('tab.promocion-detalle', {
-      url: '/promocion/:promocionId',
-      views: {
-        'tab-promocion': {
-          templateUrl: 'templates/promocion-detalle.html',
-          controller: 'PromocionDetallesCtrl'
-        }
-      }
-    })
 
     .state('tab.cuenta', {
-      url: '/cuenta',
+      url: '/cuenta/dashboard',
       views: {
         'tab-cuenta': {
           templateUrl: 'templates/tab-cuenta.html',

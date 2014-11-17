@@ -2,7 +2,7 @@
   <ion-content class="padding">
   <div class="list">
 
-    <a ng-repeat="promocion in promociones" class="item item-thumbnail-left" href="#/tab/promociones/detalles">
+    <a ng-repeat="promocion in promociones" class="item item-thumbnail-left" href="#/tab/promociones/{{promocion.id_promocion}}">
       <img src="http://www.fupudev.com/comprasengrupo/ComprasEnGrupo/admin/imagenes/1{{promocion.id_promocion}}.jpg">
       <h2>{{promocion.producto}}</h2>
       <p>{{promocion.descripcion}}</p>

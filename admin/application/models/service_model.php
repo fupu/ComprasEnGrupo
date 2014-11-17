@@ -20,6 +20,20 @@ class Service_model extends CI_Model
 
 		return $result;
 	}
+	function getPromocionesporCategoria($categoria)
+	{
+		if($categoria != 'undefined'){
+			$this->db->where('categoria_id_categoria', $categoria);
+		}
+
+        $this->db->from('promocion');
+
+		$query = $this->db->get();
+
+		$result = $query->result_array();
+
+		return $result;
+	}
 	function getImagenes()
 	{
 		//$this->db->get('promocion');
@@ -73,6 +87,19 @@ class Service_model extends CI_Model
 		
 		$result = $query->result_array();
 		
+		return $result;
+	}
+	function getPromocion($id_promocion){
+		if($id_promocion != 'undefined'){
+			$this->db->where('id_promocion', $id_promocion);
+		}
+
+        $this->db->from('promocion');
+
+		$query = $this->db->get();
+
+		$result = $query->result_array();
+
 		return $result;
 	}
 	function getUser($email){

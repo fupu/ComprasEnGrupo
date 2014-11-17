@@ -7,14 +7,16 @@ angular.module('starter.controllers', [])
 })*/
 
 .controller('PromocionesCtrl', function($scope, $http) {
-  $http.get('http://www.fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/example/promociones').
+    var url = urlService+'/promociones';
+  $http.get(url).
     success(function(data, status, headers, config) {
       $scope.promociones = data;
     }).
     error(function(data, status, headers, config) {
       // log error
     });
-    $http.get('http://www.fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/example/imagenes').
+    var urlimagenes = urlService+'/promociones';
+    $http.get(urlimagenes).
     success(function(data, status, headers, config) {
       $scope.imagenes = data;
     }).
@@ -22,11 +24,41 @@ angular.module('starter.controllers', [])
       // log error
     });
 })
-.controller('PromocionDetallesCtrl', function($scope, $stateParams, Promociones) {
-  $scope.promociones = Promociones.get($stateParams.promocionId);
+/*.controller('PromocionDetallesCtrl', function($scope, $stateParams, Promociones) {
+  $scope.promociones = Promociones.get($stateParams.id_promocion);
+})*/
+.controller('PromocionDetallesCtrl',function($scope,$http,$stateParams){
+    var url = urlService+'/promocion/id_promocion/'+$stateParams.id_promocion;
+    $http.get(url).
+    success(function(data, status, headers, config) {
+      $scope.promocion = data[0];
+    }).
+    error(function(data, status, headers, config) {
+      // log error
+    });
 })
 
-.controller('BuscarCtrl', function($scope) {
+
+.controller('BuscarCtrl', function($scope,$http) {
+    var url = urlService+'/categorias/';
+    $http.get(url).
+    success(function(data, status, headers, config) {
+      $scope.categorias = data;
+    }).
+    error(function(data, status, headers, config) {
+      // log error
+    });
+})
+
+.controller('BuscarDetallesCtrl',function($scope,$http,$stateParams){
+    var url = urlService+'/promocionporcategoria/categoria/'+$stateParams.id_promocion;
+    $http.get(url).
+    success(function(data, status, headers, config) {
+      $scope.promociones = data;
+    }).
+    error(function(data, status, headers, config) {
+      // log error
+    });
 })
 
 .factory("sesionesControl", function(){
@@ -49,7 +81,7 @@ angular.module('starter.controllers', [])
 
  
 //factoria para loguear y desloguear usuarios en angularjs
-.factory("authUsers", function($http, $location, sesionesControl, mensajesFlash){
+.factory("authUsers", function($http, $location, sesionesControl, mensajesFlash,$ionicViewService){
     var cacheSession = function(email){
         sesionesControl.set("userLogin", true);
         sesionesControl.set("email", email);
@@ -74,15 +106,23 @@ angular.module('starter.controllers', [])
                     mensajesFlash.clear();
                     //creamos la sesión con el email del usuario
                     cacheSession(user.email);
+                    // using the ionicViewService to hide the back button on next view
+                    $ionicViewService.nextViewOptions({
+                    disableBack: true
+                    });
                     //mandamos a la home
-                    $location.path("/tab/cuenta");
+                    $location.path("/tab/cuenta/dashboard");
                 }else if(data.respuesta == "incomplete_form"){
                     mensajesFlash.show("Debes introducir bien los datos del formulario");
                 }else if(data.respuesta == "failed"){
                     mensajesFlash.show("El email o el password introducidos son incorrectos, inténtalo de nuevo.");
                 }
             }).error(function(){
-                $location.path("/");
+                // using the ionicViewService to hide the back button on next view
+                $ionicViewService.nextViewOptions({
+                disableBack: true
+                });
+                $location.path("/tab/cuenta/login");
             })
         },
         //función para cerrar la sesión del usuario
@@ -92,7 +132,11 @@ angular.module('starter.controllers', [])
             }).success(function(){
                 //eliminamos la sesión de sessionStorage
                 unCacheSession();
-                $location.path("/tab/login");
+                // using the ionicViewService to hide the back button on next view
+                $ionicViewService.nextViewOptions({
+                disableBack: true
+                });
+                $location.path("/tab/cuenta/login");
             });
         },
         //función que comprueba si la sesión userLogin almacenada en sesionStorage existe
@@ -134,18 +178,26 @@ angular.module('starter.controllers', [])
 //como vemos inyectamos authUsers
 .run(function($rootScope, $location, authUsers){
     //creamos un array con las rutas que queremos controlar
-    var rutasPrivadas = ["/tab/cuenta","/info","/tab/login"];
+    var rutasPrivadas = ["/tab/cuenta/dashboard"];
     //al cambiar de rutas
     $rootScope.$on('$routeChangeStart', function(){
         //si en el array rutasPrivadas existe $location.path(), locationPath en el login
         //es /login, en la home /home etc, o el usuario no ha iniciado sesión, lo volvemos 
         //a dejar en el formulario de login
         if(in_array($location.path(),rutasPrivadas) && !authUsers.isLoggedIn()){
-            $location.path("/tab/login");
+            // using the ionicViewService to hide the back button on next view
+        $ionicViewService.nextViewOptions({
+        disableBack: true
+        });
+            $location.path("/tab/cuenta/login");
         }
         //en el caso de que intente acceder al login y ya haya iniciado sesión lo mandamos a la home
-        if(($location.path() === '/tab/login') && authUsers.isLoggedIn()){
-            $location.path("/tab/cuenta");
+        if(($location.path() === '/tab/cuenta/login') && authUsers.isLoggedIn()){
+            // using the ionicViewService to hide the back button on next view
+            $ionicViewService.nextViewOptions({
+            disableBack: true
+            });
+            $location.path("/tab/cuenta/dashboard/");
         }
     })
 })
@@ -179,7 +231,7 @@ angular.module('starter.controllers', [])
 })*/
 //factoria para registrar usuarios a la que le inyectamos la otra factoria
 //mensajesFlash para poder hacer uso de sus funciones
-.factory("registerUsers", function($http, mensajesFlash){
+.factory("registerUsers", function($http, mensajesFlash,authUsers){
     return {
         newRegister : function(user){
         		//var Data = { user: user };
@@ -199,12 +251,24 @@ angular.module('starter.controllers', [])
                     if(data.respuesta == "success"){
                         mensajesFlash.clear();
                         mensajesFlash.show_success("El registro se ha procesado correctamente.");
-                        $location.path("/tab/cuenta");
+                        //creamos la sesión con el email del usuario
+                        //cacheSession(user.email);
+                            //función que llamamos al hacer sumbit al formulario
+                            
+                            authUsers.login(user);
+                             
+
+                        // using the ionicViewService to hide the back button on next view
+                        $ionicViewService.nextViewOptions({
+                            disableBack: true
+                        });
+                        //mandamos a la home
+                    $location.path("/tab/cuenta/dashboard");
                     }else if(data.respuesta == "exists"){
                         mensajesFlash.clear();
                         mensajesFlash.show_error("El email introducido ya existe en la bd.");
                     }else if(data.respuesta == "failed"){
-                        mensajesFlash.show_error("Ha ocurrido algún error al realizar el registro!.");
+                        mensajesFlash.show_error("Ha ocurrido algún error al realizar el roro!.");
                     }else if(data.respuesta == "error_form"){
                     	mensajesFlash.clear();
                         mensajesFlash.show_error("Ha ocurrido algún error al realizar el registro!OUT.");
