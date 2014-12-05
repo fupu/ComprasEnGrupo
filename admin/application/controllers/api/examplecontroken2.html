@@ -6,11 +6,11 @@
  * This is an example of a few basic user interaction methods you could use
  * all done with a hardcoded array.
  *
- * @package		CodeIgniter
- * @subpackage	Rest Server
- * @category	Controller
- * @author		Phil Sturgeon
- * @link		http://philsturgeon.co.uk/code/
+ * @package     CodeIgniter
+ * @subpackage  Rest Server
+ * @category    Controller
+ * @author      Phil Sturgeon
+ * @link        http://philsturgeon.co.uk/code/
 */
 
 // This can be removed if you use __autoload() in config.php OR use Modular Extensions
@@ -41,22 +41,6 @@ class Example extends REST_Controller
         }
     }
 
-    function promocionporcategoria_get()
-    {   
-        $this->load->model('service_model');
-
-        $promociones = $this->service_model->getPromocionesporCategoria($this->get('categoria'));
-
-        if($promociones)
-        {
-            $this->response($promociones, 200); // 200 being the HTTP response code
-        }
-
-        else
-        {
-            $this->response(array('error' => 'Couldn\'t find any promocion!'), 404);
-        }
-    }
 
     function promociones_get(){
         $this->load->model('service_model');
@@ -70,16 +54,7 @@ class Example extends REST_Controller
         }
     }
 
-    function promociones_post(){
-        $data = json_decode(trim(file_get_contents('php://input')),true);
-        $this->load->model("service_model");
-        $anadida = $this->service_model->anadirPromocion($data);
-        if($updateUser === true){
-            echo json_encode(array("respuesta" => "success"));
-        }else{
-            echo json_encode(array("respuesta" => "failed"));
-        }
-    }
+    function promociones_put(){}
 
     function imagenes_get(){
         $this->load->model('service_model');
@@ -113,41 +88,21 @@ class Example extends REST_Controller
 
         else
         {
-            $this->response(array('error' => 'Couldn\'t find any categoria!'), 404);
+            $this->response(array('error' => 'Couldn\'t find any users!'), 404);
         }
     }
 
-    function promocion_get(){
-        $this->load->model('service_model');
-        if(!$this->get('id_promocion'))
-        {
-            $this->response(NULL, 400);
-        }
-        $promocion = $this->service_model->getPromocion( $this->get('id_promocion') );
-
-        if($promocion){
-            $this->response($promocion,200);
-        }else{
-            $this->response(array('error' => 'Couldn\'t find any promocion!'), 404);
-        }
-    }
-
-    function promocion_put(){
-        
-    }
-
-
-	function user_get()
+    function user_get()
     {
         $this->load->model('service_model');
         if(!$this->get('email'))
         {
-        	$this->response(NULL, 400);
+            $this->response(NULL, 400);
         }
 
         $user = $this->service_model->getUser( $this->get('email') );
-    	
-    	
+        
+        
         if($user)
         {
             $this->response($user, 200); // 200 being the HTTP response code
@@ -212,23 +167,23 @@ class Example extends REST_Controller
         $this->load->model("login_model");
         $loginUser = $this->login_model->loginUser($email,$password);
         if($loginUser === true){
-            echo json_encode(array("respuesta" => "success"));
+            $this->output->set_header("authorizationToken: NjMwNjM4drgssOTQtMjE0Mi00ZWYzLWEzMDQtYWYyMjkyMzNiOGIy");
+            $this->output->set_header("authorized: true");
+            //$message =  json_encode(array('authorizationToken' => 'NjMwNjM4drgssOTQtMjE0Mi00ZWYzLWEzMDQtYWYyMjkyMzNiOGIy', 'authorized' => 'true'));
+            //echo json_encode(array("respuesta" => "success"));
+            $this->response(200);
         }else{
-            echo json_encode(array("respuesta" => "failed"));
+            $this->response(401);
         }
     }
 
     function loginUser_get(){}
 
-    function updateUser_post(){
-        $data = json_decode(trim(file_get_contents('php://input')),true);
-        $this->load->model("service_model");
-        $updateUser = $this->service_model->updateUser($data);
-        if($updateUser === true){
-            echo json_encode(array("respuesta" => "success"));
-        }else{
-            echo json_encode(array("respuesta" => "failed"));
-        }
+    function logout_post(){
+        $this->response(200);
+    }
+    function logout_get(){
+
     }
 
     function user_post()
@@ -252,7 +207,7 @@ class Example extends REST_Controller
     
     function user_delete()
     {
-    	$this->service_model->deleteUser( $this->get('email') );
+        $this->service_model->deleteUser( $this->get('email') );
         $message = array('email' => $this->get('email'), 'message' => 'DELETED!');
         
         $this->response($message, 200); // 200 being the HTTP response code
@@ -260,13 +215,21 @@ class Example extends REST_Controller
     
     function users_get()
     {
+        
+        
         $this->load->model('service_model');
 
         $users = $this->service_model->getUsers();
         
         if($users)
         {
-            $this->response($users, 200); // 200 being the HTTP response code
+            $auth = $this->input->get_request_header('authorizationToken', TRUE);
+            if($auth == "NjMwNjM4drgssOTQtMjE0Mi00ZWYzLWEzMDQtYWYyMjkyMzNiOGIy")
+                $this->response($users, 200); // 200 being the HTTP response code
+            /*if($token == "NjMwNjM4drgssOTQtMjE0Mi00ZWYzLWEzMDQtYWYyMjkyMzNiOGIy")
+                $this->response($users, 200); // 200 being the HTTP response code*/
+            else
+                $this->response(401);
         }
 
         else
@@ -276,14 +239,14 @@ class Example extends REST_Controller
     }
 
 
-	public function send_post()
-	{
-		var_dump($this->request->body);
-	}
+    public function send_post()
+    {
+        var_dump($this->request->body);
+    }
 
 
-	public function send_put()
-	{
-		var_dump($this->put('foo'));
-	}
+    public function send_put()
+    {
+        var_dump($this->put('foo'));
+    }
 }

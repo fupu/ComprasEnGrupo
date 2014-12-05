@@ -1,7 +1,7 @@
 <ion-view title="Buscar">
   <ion-content class="padding">
       <div class="list">
-      	<a ng-repeat="categoria in categorias" class="item" >
+      	<a ng-repeat="categoria in categorias" class="item" href="#/tab/buscar/filtro/{{categoria.id_categoria}}">
       		<h2>{{categoria.categoria}}</h2>
     	</a>
       </div>

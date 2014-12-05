@@ -1,6 +1,6 @@
 angular.module('starter.controllers', [])
 
-.controller('DestacadasCtrl', function($scope) {
+.controller('PropuestasCtrl', function($scope) {
 })
 /*.controller('PromocionesCtrl', function($scope, Promociones) {
   $scope.promociones = Promociones.all();
@@ -50,8 +50,8 @@ angular.module('starter.controllers', [])
     });
 })
 
-.controller('BuscarDetallesCtrl',function($scope,$http,$stateParams){
-    var url = urlService+'/promocionporcategoria/categoria/'+$stateParams.id_promocion;
+.controller('BuscarFiltroCtrl',function($scope,$http,$stateParams){
+    var url = urlService+'/promocionporcategoria/categoria/'+$stateParams.id_categoria;
     $http.get(url).
     success(function(data, status, headers, config) {
       $scope.promociones = data;
@@ -60,7 +60,16 @@ angular.module('starter.controllers', [])
       // log error
     });
 })
-
+.controller('BuscarFiltroDetallesCtrl',function($scope,$http,$stateParams){
+    var url = urlService+'/promocion/id_promocion/'+$stateParams.id_promocion;
+    $http.get(url).
+    success(function(data, status, headers, config) {
+      $scope.promociones = data[0];
+    }).
+    error(function(data, status, headers, config) {
+      // log error
+    });
+})
 .factory("sesionesControl", function(){
     return {
         //obtenemos una sesión //getter
@@ -105,7 +114,8 @@ angular.module('starter.controllers', [])
                     //si todo ha ido bien limpiamos los mensajes flash
                     mensajesFlash.clear();
                     //creamos la sesión con el email del usuario
-                    cacheSession(user.email);
+                    window.localStorage.setItem("udp_email",user.email);
+                    //cacheSession(user.email);
                     // using the ionicViewService to hide the back button on next view
                     $ionicViewService.nextViewOptions({
                     disableBack: true
@@ -127,21 +137,26 @@ angular.module('starter.controllers', [])
         },
         //función para cerrar la sesión del usuario
         logout : function(){
-            return $http({
+            /*return $http({
                 url : "http://www.fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/login/loginUser"
-            }).success(function(){
+            }).success(function(){*/
+                //eliminamos la sesión de localStorage
+                window.localStorage.removeItem("udp_email");
                 //eliminamos la sesión de sessionStorage
-                unCacheSession();
+                //unCacheSession();
                 // using the ionicViewService to hide the back button on next view
                 $ionicViewService.nextViewOptions({
                 disableBack: true
                 });
                 $location.path("/tab/cuenta/login");
-            });
+            //});
         },
-        //función que comprueba si la sesión userLogin almacenada en sesionStorage existe
+        //función que comprueba si la sesión userLogin almacenada en localStorage existe
         isLoggedIn : function(){
-            return sesionesControl.get("userLogin");
+                if(window.localStorage.getItem("udp_email"))
+                {
+                    return true;
+                }
         }
     }
 })
@@ -150,9 +165,138 @@ angular.module('starter.controllers', [])
 //con $scope.email el email con el que ha iniciado sesión para saludarlo, para esto 
 //debemos inyectar las factorias sesionesControl y authUsers
 .controller("CuentaCtrl", function($scope, sesionesControl, authUsers){
-    $scope.email = sesionesControl.get("email");
+    $scope.email = window.localStorage.getItem("udp_email");
     $scope.logout = function(){
         authUsers.logout();
+    }
+})
+.controller("CuentaEditarCtrl", function($scope, authUsers,$http,editUsers){
+    //$scope.email = window.localStorage.getItem("udp_email");
+    var url = urlService+'/user/email/'+window.localStorage.getItem("udp_email");
+    $http.get(url).
+        success(function(data, status, headers, config) {
+        $scope.usuario = data[0];
+    }).
+    error(function(data, status, headers, config) {
+      // log error
+    });
+     $scope.editUser = function(user){
+        editUsers.editUser(user);
+    }
+})
+.controller("CuentaAnadirCtrl", function($scope, authUsers,$http,anadirPromociones,$cordovaCamera,$ionicLoading){
+    //$scope.email = window.localStorage.getItem("udp_email");
+    var url = urlService+'/categorias';
+    $http.get(url).
+        success(function(data, status, headers, config) {
+        $scope.categorias = data;
+    }).
+    error(function(data, status, headers, config) {
+      // log error
+    });
+
+     $scope.anadirPromocion = function(promocion){
+        anadirPromociones.anadirPromocion(promocion);
+    }
+    $scope.data = { "ImageURI" :  "Select Image" };
+    $scope.takePicture = function() {
+      var options = {
+        quality: 50,
+        destinationType: Camera.DestinationType.FILE_URL,
+        sourceType: Camera.PictureSourceType.CAMERA
+      };
+      $cordovaCamera.getPicture(options).then(
+        function(imageData) {
+            $scope.picData = imageData;
+            $scope.ftLoad = true;
+            $localstorage.set('fotoUp', imageData);
+            $ionicLoading.show({template: 'Foto acquisita...', duration:500});
+        },
+        function(err){
+            $ionicLoading.show({template: 'Errore di caricamento...', duration:5500});
+            })
+      }
+
+      $scope.selectPicture = function() { 
+        var options = {
+            quality: 50,
+            destinationType: Camera.DestinationType.FILE_URI,
+            sourceType: Camera.PictureSourceType.PHOTOLIBRARY
+        };
+
+      $cordovaCamera.getPicture(options).then(
+        function(imageURI) {
+            window.resolveLocalFileSystemURI(imageURI, function(fileEntry) {
+                $scope.picData = fileEntry.nativeURL;
+                $scope.ftLoad = true;
+                var image = document.getElementById('myImage');
+                image.src = fileEntry.nativeURL;
+            });
+            $ionicLoading.show({template: 'Foto acquisita...', duration:5000});
+        },
+        function(err){
+            $ionicLoading.show({template: 'Errore di caricamento...', duration:5000});
+        })
+    };
+
+    $scope.uploadPicture = function() {
+        $ionicLoading.show({template: 'Sto inviando la foto...'});
+        var fileURL = $scope.picData;
+        var options = new FileUploadOptions();
+        options.fileKey = "file";
+        options.fileName = fileURL.substr(fileURL.lastIndexOf('/') + 1);
+        options.mimeType = "image/jpeg";
+        options.chunkedMode = true;
+
+        var params = {};
+        params.value1 = "someparams";
+        params.value2 = "otherparams";
+
+        options.params = params;
+
+        var ft = new FileTransfer();
+        ft.upload(fileURL, encodeURI(urlService+"/uploadPhoto"), viewUploadedPictures, function(error) {$ionicLoading.show({template: 'Errore di connessione...'});
+        $ionicLoading.hide();}, options);
+    }
+
+    var viewUploadedPictures = function() {
+        $ionicLoading.show({template: 'Sto cercando le tue foto...'});
+        server = "http://www.yourdomain.com/upload.php";
+        if (server) {
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange=function(){
+            if(xmlhttp.readyState === 4){
+                    if (xmlhttp.status === 200) {                    
+                document.getElementById('server_images').innerHTML = xmlhttp.responseText;
+                    }
+                    else { $ionicLoading.show({template: 'Errore durante il caricamento...', duration: 1000});
+                    return false;
+                    }
+                }
+            };
+            xmlhttp.open("GET", server , true);
+            xmlhttp.send()} ;
+        $ionicLoading.hide();
+    }
+
+    $scope.viewPictures = function() {
+        $ionicLoading.show({template: 'Sto cercando le tue foto...'});
+        server = "http://www.yourdomain.com/upload.php";
+        if (server) {
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange=function(){
+            if(xmlhttp.readyState === 4){
+                    if (xmlhttp.status === 200) {                    
+                document.getElementById('server_images').innerHTML = xmlhttp.responseText;
+                    }
+                    else { $ionicLoading.show({template: 'Errore durante il caricamento...', duration: 1000});
+                    return false;
+                    }
+                }
+            };
+            xmlhttp.open("GET", server , true);
+            xmlhttp.send()} ;
+        $ionicLoading.hide();
     }
 })
  //controlador loginController
@@ -178,7 +322,7 @@ angular.module('starter.controllers', [])
 //como vemos inyectamos authUsers
 .run(function($rootScope, $location, authUsers){
     //creamos un array con las rutas que queremos controlar
-    var rutasPrivadas = ["/tab/cuenta/dashboard"];
+    var rutasPrivadas = ["/tab/cuenta/dashboard","/tab/cuenta/editar"];
     //al cambiar de rutas
     $rootScope.$on('$routeChangeStart', function(){
         //si en el array rutasPrivadas existe $location.path(), locationPath en el login
@@ -229,6 +373,82 @@ angular.module('starter.controllers', [])
         }
     }
 })*/
+.factory("anadirPromociones",function($http,mensajesFlash,authUsers,$ionicViewService,$location){
+    return{
+            anadirPromocion : function (promocion) {
+            return $http({
+                url: 'http://fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/example/promociones/',
+                method: "POST",
+                 data:{
+                    'producto':promocion.producto,
+                    'precio':promocion.precio,
+                    'descripcion':promocion.descripcion,
+                    'medida':promocion.medida,
+                    'compra_minima':promocion.compra_minima,
+                    'observacion':promocion.observacion,
+                    'categoria':promocion.categoria,
+                    'lugar':promocion.lugar,
+                    'email_proponente':promocion.nombre,
+                },
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            }).success(function(data){
+                $ionicViewService.nextViewOptions({
+                    disableBack: true
+                    });
+                    //mandamos a la home
+                    $location.path("/tab/cuenta/dashboard");
+            }).error(function(){
+                mensajesFlash.show("Error critico");
+                // using the ionicViewService to hide the back button on next view
+                $ionicViewService.nextViewOptions({
+                disableBack: true
+                });
+                $location.path("/tab/cuenta/anadir");
+            })
+    }
+
+    }
+})
+
+.factory("editUsers",function($http,mensajesFlash,authUsers,$ionicViewService,$location){
+    return{
+            editUser : function (user) {
+            return $http({
+                url: 'http://fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/example/updateUser/',
+                method: "POST",
+                 data:{
+                    'email':user.email,
+                    'nick':user.nick,
+                    'direccion':user.direccion,
+                    'telefono1':user.telefono1,
+                    'telefono2':user.telefono2,
+                    'pais':user.pais,
+                    'provincia':user.provincia,
+                    'poblacion':user.poblacion,
+                    'nombre':user.nombre,
+                    'apellidos':user.apellidos,
+                    'cod_postal':user.cod_postal,
+                    'website':user.website
+                },
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            }).success(function(data){
+                $ionicViewService.nextViewOptions({
+                    disableBack: true
+                    });
+                    //mandamos a la home
+                    $location.path("/tab/cuenta/dashboard");
+            }).error(function(){
+                mensajesFlash.show("Error critico");
+                // using the ionicViewService to hide the back button on next view
+                $ionicViewService.nextViewOptions({
+                disableBack: true
+                });
+                $location.path("/tab/cuenta/dashboard");
+            })
+    }
+
+    }
+})
 //factoria para registrar usuarios a la que le inyectamos la otra factoria
 //mensajesFlash para poder hacer uso de sus funciones
 .factory("registerUsers", function($http, mensajesFlash,authUsers){

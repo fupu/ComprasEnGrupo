@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
+angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','ngCordova'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -103,12 +103,31 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
       }
     })
 
-    .state('tab.destacadas', {
-      url: '/destacadas',
+    .state('tab.buscar-filtro', {
+      url: '/buscar/filtro/:id_categoria',
       views: {
-        'tab-destacadas': {
-          templateUrl: 'templates/tab-destacadas.html',
-          controller: 'DestacadasCtrl'
+        'tab-buscar': {
+          templateUrl: 'templates/buscar-filtro.html',
+          controller: 'BuscarFiltroCtrl'
+        }
+      }
+    })
+
+    .state('tab.buscar-filtro-detalle', {
+      url: '/buscar/filtro/promocion/:id_promocion',
+      views: {
+        'tab-buscar': {
+          templateUrl: 'templates/promocion-detalle.html',
+          controller: 'PromocionDetallesCtrl'
+        }
+      }
+    })
+    .state('tab.propuestas', {
+      url: '/propuestas',
+      views: {
+        'tab-propuestas': {
+          templateUrl: 'templates/tab-propuestas.html',
+          controller: 'PropuestasCtrl'
         }
       }
     })
@@ -119,6 +138,25 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
         'tab-cuenta': {
           templateUrl: 'templates/tab-cuenta.html',
           controller: 'CuentaCtrl'
+        }
+      }
+    })
+
+    .state('tab.cuenta-anadir', {
+      url: '/cuenta/anadir',
+      views: {
+        'tab-cuenta': {
+          templateUrl: 'templates/tab-cuenta-anadir.html',
+          controller: 'CuentaAnadirCtrl'
+        }
+      }
+    })
+    .state('tab.cuenta-editar', {
+      url: '/cuenta/editar',
+      views: {
+        'tab-cuenta': {
+          templateUrl: 'templates/tab-cuenta-editar.html',
+          controller: 'CuentaEditarCtrl'
         }
       }
     });

@@ -1,0 +1,51 @@
+<ion-view title="Editar Cuenta">
+  <ion-content class="padding">
+		<div class="list">
+  			<label class="item item-input item-stacked-label">
+    			<span class="input-label">Nick</span>
+    			<input type="text" placeholder="{{usuario.nick}}" ng-model="usuario.nick">
+  			</label>
+  			<label class="item item-input item-stacked-label">
+    			<span class="input-label">Nombre</span>
+    			<input type="text" placeholder="{{usuario.nombre}}"  ng-model="usuario.nombre">
+  			</label>
+  			<label class="item item-input item-stacked-label">
+    			<span class="input-label">Apellidos</span>
+    			<input type="text" placeholder="{{usuario.apellidos}}"  ng-model="usuario.apellidos">
+  			</label>
+   			<label class="item item-input item-stacked-label">
+    			<span class="input-label">Dirección</span>
+    			<input type="text" placeholder="{{usuario.direccion}}"  ng-model="usuario.direccion">
+  			</label>
+    			<label class="item item-input item-stacked-label">
+    			<span class="input-label">Teléfono 1</span>
+    			<input type="text" placeholder="{{usuario.telefono1}}"  ng-model="usuario.telefono1">
+  			</label>
+   			<label class="item item-input item-stacked-label">
+    			<span class="input-label">Teléfono 2</span>
+    			<input type="text" placeholder="{{usuario.telefono2}}"  ng-model="usuario.telefono2">
+  			</label>
+   			<label class="item item-input item-stacked-label">
+    			<span class="input-label">Pais</span>
+    			<input type="text" placeholder="{{usuario.pais}}"  ng-model="usuario.pais">
+  			</label>
+   			<label class="item item-input item-stacked-label">
+    			<span class="input-label">Provincia</span>
+    			<input type="text" placeholder="{{usuario.provincia}}"  ng-model="usuario.provincia">
+  			</label>
+  			<label class="item item-input item-stacked-label">
+    			<span class="input-label">Población</span>
+    			<input type="text" placeholder="{{usuario.poblacion}}"  ng-model="usuario.poblacion">
+  			</label>
+  			<label class="item item-input item-stacked-label">
+    			<span class="input-label">Código Postal</span>
+    			<input type="text" placeholder="{{usuario.cod_postal}}"  ng-model="usuario.cod_postal">
+  			</label>
+  			<label class="item item-input item-stacked-label">
+    			<span class="input-label">Website</span>
+    			<input type="text" placeholder="{{usuario.website}}" ng-model="usuario.website">
+  			</label>
+  			<button ng-click="editUser(usuario)" class="button button-block button-positive">Editar</button>
+</div>
+  </ion-content>
+</ion-view>

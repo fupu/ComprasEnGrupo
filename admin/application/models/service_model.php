@@ -120,7 +120,55 @@ class Service_model extends CI_Model
 
 		return $result;
 	}
-
+	function updateUser($data){
+        $datos = array(
+            'nombre'       =>   $data['nombre'],
+            'nick'         =>   $data['nick'],
+            'direccion'    =>   $data['direccion'],
+            'telefono1'	   =>	$data['telefono1'],
+            'telefono2'	   =>	$data['telefono2'],
+            'pais'		   =>	$data['pais'],
+            'provincia'	   =>	$data['provincia'],
+            'poblacion'	   =>	$data['poblacion'],
+            'apellidos'	   =>	$data['apellidos'],
+            'cod_postal'   =>	$data['cod_postal'],
+            'website'	   =>	$data['website'],
+        );
+        $this->db->where('email',$data['email']);
+        $this->db->update('usuario',$datos);
+        /*$check_exists = $this->db->get("usuario");
+        if($check_exists->num_rows() == 0){
+        	return true;
+            
+            return true;
+        }else{
+            return false;
+        }*/
+    }
+	function anadirPromocion($data){
+        $datos = array(
+            'producto'       =>   $data['producto'],
+            'precio'         =>   $data['precio'],
+            'descripcion'    =>   $data['descripcion'],
+            'unidad_medida'	   =>	$data['unidad_medida'],
+            'compra_minima'	   =>	$data['compra_minima'],
+            'observacion'		   =>	$data['observacion'],
+            'categoria_id_categoria'	   =>	$data['categoria'],
+            //'lugar'	   =>	$data['lugar'],
+            //'email_proponente'	   =>	$data['email_proponente'],
+            'tipo_envio'   =>	$data['tipo_envio']
+        );
+        
+        $this->db->insert('promocion',$datos);
+        /*$check_exists = $this->db->get("usuario");
+        if($check_exists->num_rows() == 0){
+        	return true;
+            
+            return true;
+        }else{
+            return false;
+        }*/
+    }
 	function registerUser($email,$password,$nombre){
         $datos = array(
             'nombre'        =>      $nombre,

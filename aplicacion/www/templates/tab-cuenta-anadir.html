@@ -1,0 +1,55 @@
+<ion-view title="Añadir Promoción / Propuesta">
+  <ion-content class="padding">
+		<div class="list">
+  			<label class="item item-input item-stacked-label">
+    			<span class="input-label">Producto</span>
+    			<input type="text" placeholder="Producto" ng-model="promocion.producto">
+  			</label>
+  			<label class="item item-input item-stacked-label">
+    			<span class="input-label">Precio</span>
+    			<input type="text" placeholder="$$"  ng-model="promocion.precio">
+  			</label>
+  			<label class="item item-input item-stacked-label">
+    			<span class="input-label">Descripción</span>
+    			<input type="text" placeholder="Breve descripción"  ng-model="promocion.descripcion">
+  			</label>
+<!--<label class="item item-input item-stacked-label">Tipo de envio:</label>
+    <select name="select-choice-1" id="select-choice-1" data-native-menu="false">
+        // POP OUT DROP DOWN HEADER
+        <option value="choose-one" data-placeholder="true">Choose one...</option>
+        <option value="standard">Recogida en origen></option>
+        <option value="standard">Transferencia bancaria></option>
+        <option value="standard">options/option></option>
+        <option value="standard">options/option></option>
+    </select>-->
+
+    			<label class="item item-input item-stacked-label">
+    			<span class="input-label">Medida</span>
+    			<input type="text" placeholder="Kg / Cm etc"  ng-model="promocion.unidad_medida">
+  			</label>
+   			<label class="item item-input item-stacked-label">
+    			<span class="input-label">Compra mínima</span>
+    			<input type="text" placeholder="Compra mínima"  ng-model="promocion.compra_minima">
+  			</label>
+   			<label class="item item-input item-stacked-label">
+    			<span class="input-label">Observación</span>
+    			<input type="text" placeholder="Observaciones a añadir"  ng-model="promocion.observacion">
+  			</label>
+          <label class="item item-input item-select">
+              <div class="input-label">Categoría</div>
+              <select ng-model="promocion.categoria">
+                <option value="" data-placeholder="true">Ninguna</option>
+                <option value="{{categoria.id_categoria}}"ng-repeat="categoria in categorias" >{{categoria.categoria}}
+                </option>
+              </select>
+            </label>
+        <label class="item item-input item-stackaed-label">
+    			<span class="input-label">Lugar</span>
+    			<input type="text" placeholder="Lugar"  ng-model="promocion.lugar">
+  			</label>
+    <button class="picButton" ng-click="selectPicture()" class="button button-block button-primary">Take Photo</button>
+     <img ng-src="{{image}}" style="max-width: 100%"/>
+  			<button ng-click="anadirPromocion(promocion)" class="button button-block button-positive" >Añadir</button>
+</div>
+  </ion-content>
+</ion-view>
