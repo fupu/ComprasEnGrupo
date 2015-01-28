@@ -1,0 +1,15 @@
+<ion-view title="Editar Cuenta">
+  <ion-content class="padding">
+		<div class="list">
+  			<label class="item item-input item-stacked-label">
+    			<span class="input-label">Contraseña Antigua</span>
+    			<input type="password" placeholder="" ng-model="oldpassword">
+  			</label>
+        <label class="item item-input item-stacked-label">
+          <span class="input-label">Contraseña Nueva</span>
+          <input type="password" placeholder="" ng-model="newpassword">
+        </label>
+  			<button ng-click="cambioPW(oldpassword,newpassword)" class="button button-block button-positive">Cambiar Contraseña</button>
+</div>
+  </ion-content>
+</ion-view>

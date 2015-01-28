@@ -142,12 +142,30 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
       }
     })
 
-    .state('tab.cuenta-anadir', {
-      url: '/cuenta/anadir',
+    .state('tab.cuenta-anadirpromocion', {
+      url: '/cuenta/anadirpromocion',
       views: {
         'tab-cuenta': {
-          templateUrl: 'templates/tab-cuenta-anadir.html',
+          templateUrl: 'templates/tab-cuenta-anadir-promocion.html',
           controller: 'CuentaAnadirCtrl'
+        }
+      }
+    })
+    .state('tab.cuenta-anadirpropuesta', {
+      url: '/cuenta/anadirpropuesta',
+      views: {
+        'tab-cuenta': {
+          templateUrl: 'templates/tab-cuenta-anadir-propuesta.html',
+          controller: 'CuentaAnadirPropuestaCtrl'
+        }
+      }
+    })
+    .state('tab.cuenta-cambiopw', {
+      url: '/cuenta/cambiopw',
+      views: {
+        'tab-cuenta': {
+          templateUrl: 'templates/tab-cuenta-cambiopw.html',
+          controller: 'CuentaEditarPWCtrl'
         }
       }
     })

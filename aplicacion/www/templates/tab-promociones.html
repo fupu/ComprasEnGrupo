@@ -1,9 +1,14 @@
 <ion-view title="Promociones">
+<!--<ion-nav-buttons side="right">
+      <button class="button button-clear button-clear" ng-click="logout()">
+        Desconectar 
+      </button>
+    </ion-nav-buttons>-->
   <ion-content class="padding">
   <div class="list">
 
     <a ng-repeat="promocion in promociones" class="item item-thumbnail-left" href="#/tab/promociones/{{promocion.id_promocion}}">
-      <img src="http://www.fupudev.com/comprasengrupo/ComprasEnGrupo/admin/imagenes/1{{promocion.id_promocion}}.jpg">
+      <img src="http://www.fupudev.com/comprasengrupo/ComprasEnGrupo/admin/uploads/{{promocion.imagen}}">
       <h2>{{promocion.producto}}</h2>
       <p>{{promocion.descripcion}}</p>
     </a>

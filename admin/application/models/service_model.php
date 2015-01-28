@@ -11,15 +11,28 @@ class Service_model extends CI_Model
 	function getPromociones()
 	{
 		//$this->db->get('promocion');
-		$this->db->order_by('fecha_creacion', 'asc');
+		$this->db->order_by('fecha_creacion', 'desc');
 		//$this->db->limit(5);
+		$this->db->where('tipo', '0'); //PROMOCION
 		$query = $this->db->get('promocion');
 
-		    
 		$result = $query->result_array();
 
 		return $result;
 	}
+	function getPropuestas()
+	{
+		
+		$this->db->order_by('fecha_creacion', 'desc');
+		//$this->db->limit(5);
+		$this->db->where('tipo', '1'); //PROPUESTA
+		$query = $this->db->get('promocion');
+
+		$result = $query->result_array();
+
+		return $result;
+	}
+
 	function getPromocionesporCategoria($categoria)
 	{
 		if($categoria != 'undefined'){
@@ -89,6 +102,19 @@ class Service_model extends CI_Model
 		
 		return $result;
 	}
+		function getPropuesta($id_propuesta){
+		if($id_propuesta != 'undefined'){
+			$this->db->where('id_promocion', $id_propuesta);
+		}
+
+        $this->db->from('promocion');
+
+		$query = $this->db->get();
+
+		$result = $query->result_array();
+
+		return $result;
+	}
 	function getPromocion($id_promocion){
 		if($id_promocion != 'undefined'){
 			$this->db->where('id_promocion', $id_promocion);
@@ -102,6 +128,19 @@ class Service_model extends CI_Model
 
 		return $result;
 	}
+	function getImagen($id_promocion){
+		if($id_promocion != 'undefined'){
+			$this->db->where('Promocion_id_promocion', $id_promocion);
+		}
+
+        $this->db->from('imagen');
+
+		$query = $this->db->get();
+
+		$result = $query->result_array();
+
+		return $result;
+	}	
 	function getUser($email){
 		//$this->db->select('*');
         //$this->db->from('usuario');
@@ -119,6 +158,13 @@ class Service_model extends CI_Model
 		$result = $query->result_array();
 
 		return $result;
+	}
+	function updatePW($data){
+		$datos = array(
+            'password'       =>   $data['password']
+        );
+        $this->db->where('email',$data['email']);
+        $this->db->update('usuario',$datos);
 	}
 	function updateUser($data){
         $datos = array(
@@ -145,7 +191,25 @@ class Service_model extends CI_Model
             return false;
         }*/
     }
+    function anadirFotoData($insert_id,$data){
+    	
+    	$datos = array(
+    		'imagen' =>	$data['fecha_fin_inscripcion'].$insert_id.".jpg",
+    		'Promocion_id_promocion'	=>	$insert_id,
+    	);
+	
+
+    	$this->db->insert('imagen',$datos);
+        if($this->db->affected_rows() != 1){
+        	return false;
+        }else{
+        	return true;
+    	}
+    }
 	function anadirPromocion($data){
+		
+		/*$tiempo=date("Y-m-d", strtotime("+7 days"));
+		
         $datos = array(
             'producto'       =>   $data['producto'],
             'precio'         =>   $data['precio'],
@@ -154,12 +218,31 @@ class Service_model extends CI_Model
             'compra_minima'	   =>	$data['compra_minima'],
             'observacion'		   =>	$data['observacion'],
             'categoria_id_categoria'	   =>	$data['categoria'],
-            //'lugar'	   =>	$data['lugar'],
+            'lugar'	   =>	$data['lugar'],
             //'email_proponente'	   =>	$data['email_proponente'],
-            'tipo_envio'   =>	$data['tipo_envio']
-        );
+            'fecha_fin_inscripcion'	=>	$tiempo,
+            'Usuario_email'	   =>	$data['usuario_email'],
+            'tipo_envio'   =>	$data['tipo_envio'],
+            'tipo'	=> '0'
+        );*/
         
-        $this->db->insert('promocion',$datos);
+        $this->db->insert('promocion',$data);
+
+        $insert_id = $this->db->insert_id();
+
+        //SI se inserto correctamente
+        if($this->db->affected_rows() != 1){
+        	return null;
+        }else{
+    		$datos = array(
+    			'imagen' =>	$data['fecha_fin_inscripcion'].$insert_id.".jpg"
+    		);
+       		$this->db->where('id_promocion',$insert_id);
+        	$this->db->update('promocion',$datos);
+        	return $insert_id;
+    	}
+        
+        //return ($this->db->affected_rows() != 1) ? false : true;
         /*$check_exists = $this->db->get("usuario");
         if($check_exists->num_rows() == 0){
         	return true;

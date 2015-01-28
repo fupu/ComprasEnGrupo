@@ -11,7 +11,6 @@
     <ion-nav-view name="tab-promociones"></ion-nav-view>
   </ion-tab>
 
-
   <!-- Outstanding Tab -->
   <ion-tab title="Propuestas" icon="icon ion-star" href="#/tab/propuestas">
     <ion-nav-view name="tab-propuestas"></ion-nav-view>
@@ -23,7 +22,7 @@
   </ion-tab>
 
   <!-- Account Tab -->
-  <ion-tab title="Cuenta" icon="icon ion-person" href="#/tab/cuenta/login">
+  <ion-tab title="Cuenta" ng-controller="cuentaSwitch" icon="icon ion-person" href="#/tab/{{urlCuenta}}">
     <ion-nav-view name="tab-cuenta"></ion-nav-view>
   </ion-tab>
 

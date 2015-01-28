@@ -1,4 +1,4 @@
-<ion-view title="Añadir Promoción / Propuesta">
+<ion-view title="Añadir Propuesta">
   <ion-content class="padding">
 		<div class="list">
   			<label class="item item-input item-stacked-label">
@@ -24,8 +24,8 @@
     </select>-->
 
     			<label class="item item-input item-stacked-label">
-    			<span class="input-label">Medida</span>
-    			<input type="text" placeholder="Kg / Cm etc"  ng-model="promocion.unidad_medida">
+    			<span class="input-label">Medidas</span>
+    			<input type="text" placeholder="Ejemplos: 1 Kg , 20 Cm etc"  ng-model="promocion.unidad_medida">
   			</label>
    			<label class="item item-input item-stacked-label">
     			<span class="input-label">Compra mínima</span>
@@ -35,6 +35,17 @@
     			<span class="input-label">Observación</span>
     			<input type="text" placeholder="Observaciones a añadir"  ng-model="promocion.observacion">
   			</label>
+        <label class="item item-input item-stacked-label">
+          <span class="input-label">Lugar</span>
+          <input type="text" placeholder="Lugar"  ng-model="promocion.lugar">
+        </label>
+          <label class="item item-input item-select">
+              <div class="input-label">Tipo de envío</div>
+              <select ng-model="promocion.tipo_envio">
+                <option value="En mano" data-placeholder="true">En mano</option>
+                <option value="Envío a domicilio" data-placeholder="true" >Envío a domicilio</option>
+              </select>
+            </label>
           <label class="item item-input item-select">
               <div class="input-label">Categoría</div>
               <select ng-model="promocion.categoria">
@@ -43,12 +54,15 @@
                 </option>
               </select>
             </label>
-        <label class="item item-input item-stackaed-label">
-    			<span class="input-label">Lugar</span>
-    			<input type="text" placeholder="Lugar"  ng-model="promocion.lugar">
-  			</label>
-    <button class="picButton" ng-click="selectPicture()" class="button button-block button-primary">Take Photo</button>
-     <img ng-src="{{image}}" style="max-width: 100%"/>
+       
+        <img style="display:none;" id="image" src="" />
+            <img style="width:300px;heigh:300px"ng-show="imgURI !== undefined" ng-src="{{picData}}">
+    <img ng-show="imgURI === undefined" ng-src="http://placehold.it/300x300">
+    <button class="button" ng-click="selectPicture()">Select Picture</button>
+
+    <button class="button" ng-click="takePicture()" class="button button-block button-primary">Take Photo</button>
+    <button class="button" ng-click="uploadPicture()" class="button button-block button-primary">Upload Picture</button>
+     
   			<button ng-click="anadirPromocion(promocion)" class="button button-block button-positive" >Añadir</button>
 </div>
   </ion-content>

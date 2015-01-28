@@ -69,12 +69,22 @@ class Example extends REST_Controller
             $this->response(array('error' => 'Couldn\'t find any promociones!'), 404);
         }
     }
+    function propuestas_get(){
+        $this->load->model('service_model');
 
+        $propuestas = $this->service_model->getPropuestas();
+
+        if($propuestas){
+            $this->response($propuestas,200);
+        }else{
+            $this->response(array('error' => 'Couldn\'t find any propuestas!'), 404);
+        }
+    }
     function promociones_post(){
         $data = json_decode(trim(file_get_contents('php://input')),true);
         $this->load->model("service_model");
         $anadida = $this->service_model->anadirPromocion($data);
-        if($updateUser === true){
+        if($anadida === true){
             echo json_encode(array("respuesta" => "success"));
         }else{
             echo json_encode(array("respuesta" => "failed"));
@@ -116,7 +126,34 @@ class Example extends REST_Controller
             $this->response(array('error' => 'Couldn\'t find any categoria!'), 404);
         }
     }
+    function imagen_get(){
+        $this->load->model('service_model');
+        if(!$this->get('Promocion_id_promocion'))
+        {
+            $this->response(NULL, 400);
+        }
+        $imagen = $this->service_model->getImagen( $this->get('Promocion_id_promocion') );
 
+        if($imagen){
+            $this->response($imagen,200);
+        }else{
+            $this->response(array('error' => 'Couldn\'t find any promocion!'), 404);
+        }
+    }
+    function propuesta_get(){
+        $this->load->model('service_model');
+        if(!$this->get('id_propuesta'))
+        {
+            $this->response(NULL, 400);
+        }
+        $propuesta = $this->service_model->getPropuesta( $this->get('id_propuesta') );
+
+        if($propuesta){
+            $this->response($propuesta,200);
+        }else{
+            $this->response(array('error' => 'Couldn\'t find any propuesta!'), 404);
+        }
+    }
     function promocion_get(){
         $this->load->model('service_model');
         if(!$this->get('id_promocion'))
@@ -230,7 +267,16 @@ class Example extends REST_Controller
             echo json_encode(array("respuesta" => "failed"));
         }
     }
-
+    function cambioPW_post(){
+        $data = json_decode(trim(file_get_contents('php://input')),true);
+        $this->load->model("service_model");
+        $cambioPW = $this->service_model->updatePW($data);
+        /*if($cambioPW === true){
+            echo json_encode(array("respuesta" => "success"));
+        }else{
+            echo json_encode(array("respuesta" => "failed"));
+        }*/
+    }
     function user_post()
     {
 
@@ -274,7 +320,102 @@ class Example extends REST_Controller
             $this->response(array('error' => 'Couldn\'t find any users!'), 404);
         }
     }
+    function do_upload_post(){
 
+        $config['upload_path'] = 'uploads/';
+        $config['allowed_types'] = 'gif|jpg|png';
+        $config['max_size'] = '1024 * 8';
+        //$config['max_width']  = '1024';
+        //$config['max_height']  = '768';
+        $this->load->library('upload', $config);
+
+        if ( ! $this->upload->do_upload() )
+        {
+            print_r($this->upload->display_errors('', ''));
+            print_r($this->upload->data());
+        }
+    }
+    function uploadPhotoo_post(){
+        $tiempo=date("Y-m-d", strtotime("+7 days"));
+        $data = array(
+            'producto'       =>   $_POST['producto'],
+            'precio'         =>   $_POST['precio'],
+            'descripcion'    =>   $_POST['descripcion'],
+            'unidad_medida'    =>   $_POST['unidad_medida'],
+            'compra_minima'    =>   $_POST['compra_minima'],
+            'observacion'          =>   $_POST['observacion'],
+            'categoria_id_categoria'       =>   $_POST['categoria'],
+            'lugar'    =>   $_POST['lugar'],
+            //'email_proponente'       =>   $data['email_proponente'],
+            'fecha_fin_inscripcion' =>  $tiempo,
+            'Usuario_email'    =>   $_POST['usuario_email'],
+            'tipo_envio'   =>   $_POST['tipo_envio'],
+            'tipo'  => '0'
+        );
+        $this->load->model("service_model");
+        $insert_id = $this->service_model->anadirPromocion($data);
+       if($insert_id != null){
+            $target_dir = "uploads/";
+            $target_file = $target_dir .$tiempo.$insert_id.".jpg";
+            $upload = move_uploaded_file($_FILES["image"]["tmp_name"], $target_file);
+            $fotoAnadida = $this->service_model->anadirFotoData($insert_id,$data);
+            if($fotoAnadida == true){
+                echo json_encode(array("respuesta" => "success"));
+            }
+        }else{
+            echo json_encode(array("respuesta" => "failed"));
+        }   
+    }
+
+    function uploadPhoto_post_OLDOLD(){
+        $target_dir = "uploads/";
+$target_file = $target_dir .trim($_POST['value1']).".jpg";
+move_uploaded_file($_FILES["image"]["tmp_name"], $target_file);
+        $img = array(); // return variable
+ $this->load->helper(array('file','directory'));
+ if (!empty($collection)) {
+    $path="uploads/";
+    if( !is_dir($path) ) {
+        mkdir($path);
+    }
+    $config['upload_path'] = $path; /* NB! create this dir! */
+    $config['allowed_types'] = 'gif|jpg|png|bmp|jpeg';
+    $config['file_name'] = 'image001';
+    $config['overwrite']=TRUE;
+
+    $this->load->library('upload', $config);
+
+
+    $configThumb = array();
+    $configThumb['image_library'] = 'gd2';
+    $configThumb['source_image'] = '';
+    $configThumb['create_thumb'] = FALSE;
+    $configThumb['maintain_ratio'] = FALSE;
+
+      /* Load the image library */
+    $this->load->library('image_lib');
+
+      /* We have 5 files to upload
+       * If you want more - change the 6 below as needed
+       */
+        /* Handle the file upload */
+    if (isset($_FILES['image']['tmp_name'])) {
+       $upload = move_uploaded_file($_FILES["image"]["tmp_name"], $path);
+        echo json_encode(array("respuesta" => "success"));
+        /* File failed to upload - continue */
+        if($upload === FALSE){
+            $error = array('error' => $this->upload->display_errors());
+            $data['message']=$error['error'];
+            continue;   
+        } 
+        /* Get the data about the file */
+        $data = $this->upload->data();
+        $img['image']='/'.$data['file_name'];
+
+    }
+
+ }
+    }
 
 	public function send_post()
 	{
