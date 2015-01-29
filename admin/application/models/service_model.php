@@ -102,7 +102,7 @@ class Service_model extends CI_Model
 		
 		return $result;
 	}
-		function getPropuesta($id_propuesta){
+	function getPropuesta($id_propuesta){
 		if($id_propuesta != 'undefined'){
 			$this->db->where('id_promocion', $id_propuesta);
 		}
@@ -128,6 +128,21 @@ class Service_model extends CI_Model
 
 		return $result;
 	}
+	function getSuscripciones($email){
+		if($email != 'undefined'){
+			$this->db->where('lista_compra.Usuario_email', $email);
+		}
+		$this->db->from('lista_compra');
+		$this->db->join('promocion', 'promocion.id_promocion = lista_compra.Promocion_id_promocion');
+
+		$query = $this->db->get();
+
+		$result = $query->result_array();
+
+		return $result;
+	}
+
+	
 	function getImagen($id_promocion){
 		if($id_promocion != 'undefined'){
 			$this->db->where('Promocion_id_promocion', $id_promocion);
@@ -243,6 +258,23 @@ class Service_model extends CI_Model
     	}
         
         //return ($this->db->affected_rows() != 1) ? false : true;
+        /*$check_exists = $this->db->get("usuario");
+        if($check_exists->num_rows() == 0){
+        	return true;
+            
+            return true;
+        }else{
+            return false;
+        }*/
+    }
+    function anadirInscripcion($data){
+        $datos = array(
+            'Usuario_email'        =>       $data['usuario'],
+            'Promocion_id_promocion'         =>      $data['propuestaID'],
+            'comprado'      =>      '0' 
+        );
+        //$this->db->where('email',$email);
+        $this->db->insert('lista_compra',$datos);
         /*$check_exists = $this->db->get("usuario");
         if($check_exists->num_rows() == 0){
         	return true;

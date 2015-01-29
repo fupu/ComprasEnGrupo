@@ -131,7 +131,15 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
         }
       }
     })
-
+    .state('tab.propuesta-detalle', {
+      url: '/propuestas/:id_propuesta',
+      views: {
+        'tab-propuestas': {
+          templateUrl: 'templates/propuesta-detalle.html',
+          controller: 'PropuestaDetallesCtrl'
+        }
+      }
+    })
     .state('tab.cuenta', {
       url: '/cuenta/dashboard',
       views: {
@@ -157,6 +165,15 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
         'tab-cuenta': {
           templateUrl: 'templates/tab-cuenta-anadir-propuesta.html',
           controller: 'CuentaAnadirPropuestaCtrl'
+        }
+      }
+    })
+    .state('tab.cuenta-suscripciones', {
+      url: '/cuenta/suscripciones',
+      views: {
+        'tab-cuenta': {
+          templateUrl: 'templates/tab-cuenta-suscripciones.html',
+          controller: 'CuentaSuscripciones'
         }
       }
     })

@@ -80,6 +80,17 @@ class Example extends REST_Controller
             $this->response(array('error' => 'Couldn\'t find any propuestas!'), 404);
         }
     }
+    function inscribeME_post(){
+        $data = json_decode(trim(file_get_contents('php://input')),true);
+        $this->load->model("service_model");
+        $inscrito = $this->service_model->anadirInscripcion($data);
+        if($inscrito === true){
+            echo json_encode(array("respuesta" => "success"));
+        }else{
+            echo json_encode(array("respuesta" => "failed"));
+        }
+    }
+
     function promociones_post(){
         $data = json_decode(trim(file_get_contents('php://input')),true);
         $this->load->model("service_model");
@@ -140,6 +151,20 @@ class Example extends REST_Controller
             $this->response(array('error' => 'Couldn\'t find any promocion!'), 404);
         }
     }
+    function suscripciones_get(){
+        $this->load->model('service_model');
+        if(!$this->get('email'))
+        {
+            $this->response(NULL, 400);
+        }
+        $suscripcion = $this->service_model->getSuscripciones( $this->get('email') );
+        if($suscripcion){
+            $this->response($suscripcion,200);
+        }else{
+            $this->response(array('error' => 'Couldn\'t find any suscripciones!'), 404);
+        }
+    }
+
     function propuesta_get(){
         $this->load->model('service_model');
         if(!$this->get('id_propuesta'))
@@ -335,6 +360,35 @@ class Example extends REST_Controller
             print_r($this->upload->data());
         }
     }
+    function uploadPhotooPropu_post(){
+        $tiempo=date("Y-m-d", strtotime("+7 days"));
+        $data = array(
+            'producto'       =>   $_POST['producto'],
+            'descripcion'    =>   $_POST['descripcion'],
+            'unidad_medida'    =>   $_POST['unidad_medida'],
+            'observacion'          =>   $_POST['observacion'],
+            'categoria_id_categoria'       =>   $_POST['categoria'],
+            'lugar'    =>   $_POST['lugar'],
+            //'email_proponente'       =>   $data['email_proponente'],
+            'fecha_fin_inscripcion' =>  $tiempo,
+            'Usuario_email'    =>   $_POST['usuario_email'],
+            'tipo'  => '1'
+        );
+        $this->load->model("service_model");
+        $insert_id = $this->service_model->anadirPromocion($data); // es lo mismo en este caso ya va todo en el $data
+       if($insert_id != null){
+            $target_dir = "uploads/";
+            $target_file = $target_dir .$tiempo.$insert_id.".jpg";
+            $upload = move_uploaded_file($_FILES["image"]["tmp_name"], $target_file);
+            $fotoAnadida = $this->service_model->anadirFotoData($insert_id,$data);
+            if($fotoAnadida == true){
+                echo json_encode(array("respuesta" => "success"));
+            }
+        }else{
+            echo json_encode(array("respuesta" => "failed"));
+        }   
+    }
+
     function uploadPhotoo_post(){
         $tiempo=date("Y-m-d", strtotime("+7 days"));
         $data = array(

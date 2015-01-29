@@ -1,0 +1,17 @@
+<ion-view title="Mis Suscripciones">
+<!--<ion-nav-buttons side="right">
+      <button class="button button-clear button-clear" ng-click="logout()">
+        Desconectar 
+      </button>
+    </ion-nav-buttons>-->
+  <ion-content class="padding">
+  <div class="list">
+
+    <a ng-repeat="promocion in promociones" class="item item-thumbnail-left" >
+      <img src="http://www.fupudev.com/comprasengrupo/ComprasEnGrupo/admin/uploads/{{promocion.imagen}}">
+      <h2>{{promocion.producto}}</h2>
+      <p>{{promocion.descripcion}}</p>
+    </a>
+</div>
+  </ion-content>
+</ion-view>

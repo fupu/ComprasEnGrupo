@@ -10,7 +10,7 @@ angular.module('starter.controllers', ['ngCordova'])
       // log error
     });
 })
-.controller('PropuestaDetallesCtrl',function($scope,$http,$stateParams){
+.controller('PropuestaDetallesCtrl',function($scope,$http,$stateParams,inscribeME){
     var url = urlService+'/propuesta/id_propuesta/'+$stateParams.id_propuesta;
     $http.get(url).
     success(function(data, status, headers, config) {
@@ -27,6 +27,11 @@ angular.module('starter.controllers', ['ngCordova'])
     error(function(data, status, headers, config) {
       // log error
     });
+
+    $scope.inscribeME = function(propuestaID){
+        inscribeME.inscribeME(propuestaID);
+    }
+
 })
 /*.controller('PromocionesCtrl', function($scope, Promociones) {
   $scope.promociones = Promociones.all();
@@ -218,6 +223,17 @@ angular.module('starter.controllers', ['ngCordova'])
 
     }
 })
+.controller("CuentaSuscripciones", function($scope, authUsers,$http,editUsers){
+    //$scope.email = window.localStorage.getItem("udp_email");
+    var url = urlService+'/suscripciones/email/'+window.localStorage.getItem("udp_email");
+    $http.get(url).
+        success(function(data, status, headers, config) {
+        $scope.promociones = data;
+    }).
+    error(function(data, status, headers, config) {
+      // log error
+    });
+})
 .controller("CuentaEditarCtrl", function($scope, authUsers,$http,editUsers){
     //$scope.email = window.localStorage.getItem("udp_email");
     var url = urlService+'/user/email/'+window.localStorage.getItem("udp_email");
@@ -232,7 +248,7 @@ angular.module('starter.controllers', ['ngCordova'])
         editUsers.editUser(user);
     }
 })
-.controller("CuentaAnadirCtrl", function($scope, authUsers,$http,anadirPromociones,$cordovaCamera,$ionicLoading,$cordovaFile){
+.controller("CuentaAnadirCtrl", function($scope, authUsers,$http,anadirPromociones,$cordovaCamera,$ionicViewService,$ionicLoading,$cordovaFile){
     $scope.email = window.localStorage.getItem("udp_email");
     var url = urlService+'/categorias';
     $http.get(url).
@@ -313,13 +329,11 @@ angular.module('starter.controllers', ['ngCordova'])
         options.params = params;
 
         var ft = new FileTransfer();
-        $ionicLoading.show({template: 'Se esta subiendo la foto...',showDelay: 100});
+        $ionicLoading.show({template: 'Se esta subiendo la foto...',duration:5000});
         ft.upload(fileURL, encodeURI("http://www.fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/example/uploadPhotoo"), win, function(error) {$ionicLoading.show({template: 'Error de conexión...'});
-        }, options);
-
+        $ionicLoading.hide();}, options);
         function win(r) {
-            $ionicLoading.hide();
-            $ionicLoading.show({template: 'BENE...'});
+            $ionicLoading.show({template: 'Sa ha subido la promoción con exito...',duration:1000});
         }
     }
 
@@ -420,8 +434,8 @@ angular.module('starter.controllers', ['ngCordova'])
         })
     };
 
-    $scope.uploadPicture = function() {
-        $ionicLoading.show({template: 'Se esta subiendo la foto...'});
+    $scope.uploadPicture = function(promocion) {
+        
         var fileURL = $scope.picData;
         var options = new FileUploadOptions();
         options.fileKey = "image";
@@ -430,14 +444,23 @@ angular.module('starter.controllers', ['ngCordova'])
         options.chunkedMode = true;
 
         var params = {};
-        params.value1 = "someparams";
-        params.value2 = "otherparams";
+        params.producto = promocion.producto;
+        params.descripcion = promocion.descripcion;
+        params.medida = promocion.medida;
+        params.observacion = promocion.observacion;
+        params.categoria = promocion.categoria;
+        params.lugar = promocion.lugar;
+        params.usuario_email = window.localStorage.getItem("udp_email");
 
         options.params = params;
 
         var ft = new FileTransfer();
-        ft.upload(fileURL, encodeURI("http://www.fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/example/uploadPhoto"), function(error) {$ionicLoading.show({template: 'Error de conexión...'});
+        $ionicLoading.show({template: 'Se esta subiendo la foto...',duration:5000});
+        ft.upload(fileURL, encodeURI("http://www.fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/example/uploadPhotooPropu"), win, function(error) {$ionicLoading.show({template: 'Error de conexión...'});
         $ionicLoading.hide();}, options);
+        function win(r) {
+            $ionicLoading.show({template: 'Sa ha subido la propuesta con exito...',duration:1000});
+        }
     }
 
     var viewUploadedPictures = function() {
@@ -574,6 +597,37 @@ angular.module('starter.controllers', ['ngCordova'])
         }
     }
 })*/
+.factory("inscribeME",function($http,mensajesFlash,authUsers,$ionicViewService,$location){
+    return{
+            inscribeME : function (propuestaID) {
+            return $http({
+                url: 'http://fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/example/inscribeME/',
+                method: "POST",
+                 data:{
+                    'usuario':window.localStorage.getItem("udp_email"),
+                    'propuestaID':propuestaID
+                },
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            }).success(function(data){
+                $ionicLoading.show({template: 'Inscrito a la propuesta!.', duration:1000});
+                $ionicViewService.nextViewOptions({
+                    disableBack: true
+                    });
+                    //mandamos a la home
+                    $location.path("/tab/cuenta/dashboard");
+            }).error(function(){
+                $ionicLoading.show({template: 'Error!.', duration:1000});
+                mensajesFlash.show("Error critico");
+                // using the ionicViewService to hide the back button on next view
+                $ionicViewService.nextViewOptions({
+                disableBack: true
+                });
+                $location.path("/tab/cuenta/dashboard");
+            })
+    }
+
+    }
+})
 .factory("anadirPromociones",function($http,mensajesFlash,authUsers,$ionicViewService,$location){
     return{
             anadirPromocion : function (promocion) {
