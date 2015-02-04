@@ -1,3 +1,4 @@
+
 angular.module('starter.controllers', ['ngCordova'])
 
 .controller('PropuestasCtrl', function($scope,$http) {

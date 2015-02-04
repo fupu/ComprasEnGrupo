@@ -4,10 +4,15 @@
         Desconectar 
       </button>
     </ion-nav-buttons>-->
-  <ion-content class="padding">
-  <div class="list">
+  <ion-content has-header="true" has-tabs="true" on-refresh="#" class="padding">
+              <label class="item item-input">
+            <i class="icon ion-search placeholder-icon">
+            </i>
+            <input placeholder="Buscar" type="text" ng-model="searchText">
+          </label>
 
-    <a ng-repeat="propuesta in propuestas" class="item item-thumbnail-left" href="#/tab/propuestas/{{propuesta.id_promocion}}">
+  <div class="list">
+    <a ng-repeat="propuesta in propuestas | filter:searchText" class="item item-thumbnail-left" href="#/tab/propuestas/{{propuesta.id_promocion}}">
       <img src="http://www.fupudev.com/comprasengrupo/ComprasEnGrupo/admin/uploads/{{propuesta.imagen}}">
       <h2>{{propuesta.producto}}</h2>
       <p>{{propuesta.descripcion}}</p>
