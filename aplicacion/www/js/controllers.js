@@ -1,6 +1,26 @@
 
 angular.module('starter.controllers', ['ngCordova'])
+.directive('passwordValidator', [function() {
+  return {
+    require: 'ngModel',
+    link: function(scope, elm, attr, ctrl) {
+      var pwdWidget = elm.inheritedData('$formController')[attr.passwordValidator];
 
+      ctrl.$parsers.push(function(value) {
+        if (value === pwdWidget.$viewValue) {
+          ctrl.$setValidity('MATCH', true);
+          return value;
+        }
+        ctrl.$setValidity('MATCH', false);
+      });
+
+      pwdWidget.$parsers.push(function(value) {
+        ctrl.$setValidity('MATCH', value === ctrl.$viewValue);
+        return value;
+      });
+    }
+  };
+}])
 .controller('PropuestasCtrl', function($scope,$http) {
     var url = urlService+'/propuestas';
   $http.get(url).
@@ -739,7 +759,7 @@ angular.module('starter.controllers', ['ngCordova'])
 })
 //factoria para registrar usuarios a la que le inyectamos la otra factoria
 //mensajesFlash para poder hacer uso de sus funciones
-.factory("registerUsers", function($http, mensajesFlash,authUsers){
+.factory("registerUsers", function($http, mensajesFlash,authUsers,$ionicViewService,$location){
     return {
         newRegister : function(user){
         		//var Data = { user: user };

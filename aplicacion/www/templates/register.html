@@ -1,7 +1,6 @@
 
 <ion-view  title="Registrate" name="register">
 
-
     <ion-content>
       <form name="registerUserForm">
       <div ng-show="flash_error">
@@ -26,7 +25,13 @@
         <div class="list">
           <label class="item item-input">
             <span class="input-label">Contraseña</span>
-            <input ng-required="true" type="password" placeholder="Password" ng-model="user.password">
+            <input ng-required="true" name="pwd" ng:model="user.password" type="password" placeholder="Password"  required>
+          </label>
+        </div>
+        <div class="list">
+          <label class="item item-input">
+            <span class="input-label">Confirme Contraseña</span>
+            <input ng-required="true" password-validator="pwd" name="pwd2" ng:model="user.passwordConfirm" type="password" placeholder="Password"  required>
           </label>
         </div>
         <div class="padding">

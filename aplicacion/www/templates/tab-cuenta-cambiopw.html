@@ -1,15 +1,21 @@
 <ion-view title="Editar Cuenta">
   <ion-content class="padding">
 		<div class="list">
+     <form name="CambioPWUserForm">
   			<label class="item item-input item-stacked-label">
     			<span class="input-label">Contraseña Antigua</span>
-    			<input type="password" placeholder="" ng-model="oldpassword">
+    			<input type="password" ng-required="true" name="oldpwd" placeholder="" ng-model="oldpassword" required>
   			</label>
         <label class="item item-input item-stacked-label">
-          <span class="input-label">Contraseña Nueva</span>
-          <input type="password" placeholder="" ng-model="newpassword">
+          <span class="input-label">Repite Contraseña Antigua</span>
+          <input type="password" ng-required="true" name="oldpwd2" placeholder="" ng-model="oldpasswordConfirm"  password-validator="oldpwd" required>
         </label>
-  			<button ng-click="cambioPW(oldpassword,newpassword)" class="button button-block button-positive">Cambiar Contraseña</button>
+        <label class="item item-input item-stacked-label">
+          <span class="input-label">Contraseña Nueva</span>
+          <input type="password" placeholder="" ng-model="newpassword" required>
+        </label>
+  			<button ng-disabled="!CambioPWUserForm.$valid" ng-click="cambioPW(oldpassword,newpassword)" class="button button-block button-positive">Cambiar Contraseña</button>
+      </form>
 </div>
   </ion-content>
 </ion-view>
