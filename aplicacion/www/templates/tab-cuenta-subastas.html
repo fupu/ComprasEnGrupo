@@ -1,0 +1,22 @@
+<ion-view title="Subastas">
+<!--<ion-nav-buttons side="right">
+      <button class="button button-clear button-clear" ng-click="logout()">
+        Desconectar 
+      </button>
+    </ion-nav-buttons>-->
+  <ion-content has-header="true" has-tabs="true" on-refresh="#" class="padding">
+            <label class="item item-input">
+            <i class="icon ion-search placeholder-icon">
+            </i>
+            <input placeholder="Buscar" type="text" ng-model="searchText">
+          </label>
+         
+  <div class="list">
+    <a ng-repeat="subasta in subastas | filter:searchText" class="item item-thumbnail-left" href="#/tab/cuenta/subastas/{{subasta.id_promocion}}">
+      <img src="http://www.fupudev.com/comprasengrupo/ComprasEnGrupo/admin/uploads/{{subasta.imagen}}">
+      <h2>{{subasta.producto}}</h2>
+      <p>{{subasta.descripcion}}</p>
+    </a>
+</div>
+  </ion-content>
+</ion-view>

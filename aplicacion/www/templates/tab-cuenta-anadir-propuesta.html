@@ -39,10 +39,11 @@
                 </option>
               </select>
             </label>
-       
+       <div class="row responsive-sm">
         <img style="display:none;" id="image" src="" />
             <img style="width:300px;heigh:300px"ng-show="imgURI !== undefined" ng-src="{{picData}}">
     <img ng-show="imgURI === undefined" ng-src="http://placehold.it/300x300">
+    </div>
     <button class="button" ng-click="selectPicture()">Seleccionar Foto</button>
 
     <button class="button" ng-click="takePicture()" class="button button-block button-primary">Tomar Foto</button>

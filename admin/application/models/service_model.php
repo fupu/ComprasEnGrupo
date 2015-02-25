@@ -20,17 +20,56 @@ class Service_model extends CI_Model
 
 		return $result;
 	}
+	//Lista con todas las subastas
+	function getSubastas()
+	{
+		$this->verificarSubastas();
+		$this->db->order_by('fecha_fin_inscripcion', 'desc');
+		//$this->db->limit(5);
+		$this->db->where('tipo', '3'); //SUBASTA
+		$query = $this->db->get('promocion');
+
+		$result = $query->result_array();
+		return $result;
+	}
+
+	//Lista con todas las propuestas
 	function getPropuestas()
 	{
-		
+		$this->anadirASubasta();//Comprueba que no haya propuestas pasadas de fecha
 		$this->db->order_by('fecha_creacion', 'desc');
 		//$this->db->limit(5);
 		$this->db->where('tipo', '1'); //PROPUESTA
 		$query = $this->db->get('promocion');
 
 		$result = $query->result_array();
-
 		return $result;
+	}
+	// Si una propuesta llega a su fecha limite entonces entra en subasta
+	function anadirASubasta(){
+
+		$fecha_actual = strtotime(date("d-m-Y H:i:00",time()));
+		//$this->db->limit(5);
+		$this->db->where('tipo', '1'); //PROPUESTA
+		$query = $this->db->get('promocion');
+
+		foreach($query->result_array() as $row){
+			$fecha_fin_inscripcion = strtotime($row['fecha_fin_inscripcion']);
+			if($fecha_fin_inscripcion < $fecha_actual)
+				$this->actualizarPropuesta($row);
+			//else
+			//	$array[] = $row;
+		}
+	}
+	//Se actualiza una propuesta en concreto a tipo subasta
+	function actualizarPropuesta($propuesta){
+		    $fecha_fin_subasta=date("Y-m-d H:i:s", strtotime("+7 days"));
+    		$datos = array(
+    			'tipo' =>	"3",
+    			'subasta_fecha_fin' => $fecha_fin_subasta
+    		);
+       		$this->db->where('id_promocion',$propuesta['id_promocion']);
+        	$this->db->update('promocion',$datos);
 	}
 
 	function getPromocionesporCategoria($categoria)
@@ -99,6 +138,33 @@ class Service_model extends CI_Model
 		$query = $this->db->get('usuario');
 		
 		$result = $query->result_array();
+		
+		return $result;
+	}
+	function getSubasta($id_subasta){
+		$this->verificarSubastas();
+		if($id_subasta != 'undefined'){
+			$this->db->where('id_promocion', $id_subasta);
+		}
+		$this->db->where('tipo', '3'); //SUBASTA
+        $this->db->from('promocion');
+
+		$query = $this->db->get();
+
+		$result = $query->result_array();
+
+		return $result;
+	}
+	function getInscritos($id_subasta){
+		if($id_subasta != 'undefined'){
+			$this->db->where('Promocion_id_promocion', $id_subasta);
+		}
+		$this->db->where('comprado', '0');
+        $this->db->from('lista_compra');
+
+		$query = $this->db->get();
+
+		$result = $query->num_rows();
 		
 		return $result;
 	}
@@ -206,6 +272,99 @@ class Service_model extends CI_Model
             return false;
         }*/
     }
+    function realizarPujaModel($data){
+        $datos = array(
+            'subasta_puja_ganadora'	   =>	$data['cantidad'],
+            'subasta_email_vendedor'   =>	$data['email'],
+            'telefono'=> $data['telefono']
+        );
+        $this->db->where('id_promocion',$data['promocionID']);
+        $this->db->update('promocion',$datos);
+        if($this->db->affected_rows() != 1){
+        	return false;
+        }else{
+        	return true;
+    	}
+
+    }
+	// Verifica todas las subastas si siguen activas a fecha de hoy
+    function verificarSubastas(){
+		$fecha_actual = strtotime(date("d-m-Y H:i:00",time()));
+		$this->db->where('tipo', '3'); //SUBASTA
+		$query = $this->db->get('promocion');
+        $datos = array(
+            'tipo'	   =>	'4' // subasta finalizada
+		);
+		foreach($query->result_array() as $row){
+			$fecha_fin_inscripcion = strtotime($row['subasta_fecha_fin']);
+			if($fecha_fin_inscripcion < $fecha_actual){
+				$this->db->where('id_promocion', $row['id_promocion']);
+				$this->db->update('promocion',$datos);
+				$this->mailGanadorSubasta($row);
+				//$this->mailInscritorASubasta($row);
+			}
+    	}
+	}
+	//envi un email al ganador de la subasta
+	function mailGanadorSubasta($row){
+		$this->load->library('email');
+
+		$this->db->where('comprado','0');
+		$this->db->where('Promocion_id_promocion',$row['id_promocion']);
+		$query = $this->db->get('lista_compra');
+		$string="";
+		foreach ($query->result_array as $key) {
+			$string = "Email : " + $key['Usuario_email']+"\n";
+		}
+		$this->db->where('Promocion_id_promocion',$row['id_promocion']);
+		$query = $this->db->get('lista_compra');
+
+		$this->email->from('info@fupudev.com', 'ComprasEnGrupo');
+		$this->email->to($row['subasta_email_vendedor']); 
+		//$this->email->bcco('mit0.xavi@gmail.com'); 
+
+		$this->email->subject('Has ganado la subasta!');
+
+		$this->email->message('Enhorabuena!, has ganado la subasta, desde ya los usuarios pueden contactar contigo.');	
+
+		$this->email->send();
+
+	}
+    function guardarPujaModel($data){
+        $datos = array(
+            'Usuario_email'	=>	$data['email'],
+            'Promocion_id_promocion'	=>	$data['promocionID'],
+            'cantidad_pujada'	   =>	$data['cantidad'],
+            'observacion'   =>	$data['observacion']
+        );
+
+		if($this->YaHaPujado($data)){
+        	$this->db->where('Usuario_email',$data['email']);
+        	$this->db->where('Promocion_id_promocion',$data['promocionID']);
+        	$this->db->update('subasta',$datos);
+        }else{
+        	$this->db->insert('subasta',$datos);        	
+        }
+        if($this->db->affected_rows() != 1){
+        	return false;
+        }else{
+        	return true;
+    	}
+
+    }
+    //mira si el usuario ya ha pujado por este mismo usuario para hacer update o insert
+    function YaHaPujado($data){
+    	$this->db->where('Usuario_email', $data['email']);
+    	$this->db->where('Promocion_id_promocion', $data['promocionID']);
+        $this->db->from('subasta');
+
+        if($this->db->count_all_results() != 1){
+        	return false;
+        }else{
+        	return true;
+    	}
+    }
+
     function anadirFotoData($insert_id,$data){
     	
     	$datos = array(
@@ -267,6 +426,30 @@ class Service_model extends CI_Model
             return false;
         }*/
     }
+    //Reenvia una nueva contraseña generada de forma aleatoria
+    function reenviarRandom($email){
+    	$this->load->helper('string');
+		$this->load->library('email');
+
+    	$randompassword = random_string('alnum',6);
+
+ 		$datos = array(
+            'password'       =>   hash('sha512',$randompassword),
+            'email'	=> $email
+        );
+        $this->updatePW($datos);
+
+		$this->email->from('info@fupudev.com', 'ComprasEnGrupo');
+		$this->email->to($email); 
+		//$this->email->bcco('mit0.xavi@gmail.com'); 
+
+		$this->email->subject('Recuperación de contraseña!');
+
+		$this->email->message('Su nueva contraseña es:  '.$randompassword);	
+
+		$this->email->send();
+
+    }
     function anadirInscripcion($data){
         $datos = array(
             'Usuario_email'        =>       $data['usuario'],
@@ -275,6 +458,20 @@ class Service_model extends CI_Model
         );
         //$this->db->where('email',$email);
         $this->db->insert('lista_compra',$datos);
+        /*$check_exists = $this->db->get("usuario");
+        if($check_exists->num_rows() == 0){
+        	return true;
+            
+            return true;
+        }else{
+            return false;
+        }*/
+    }
+    function borrarInscripcion($data){
+    	$this->db->where('Usuario_email',$data['usuario']);
+        $this->db->where('Promocion_id_promocion',$data['subastaID']);
+        //$this->db->where('email',$email);
+        $this->db->delete('lista_compra',$datos);
         /*$check_exists = $this->db->get("usuario");
         if($check_exists->num_rows() == 0){
         	return true;

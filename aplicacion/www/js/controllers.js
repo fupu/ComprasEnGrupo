@@ -31,7 +31,10 @@ angular.module('starter.controllers', ['ngCordova'])
       // log error
     });
 })
-.controller('PropuestaDetallesCtrl',function($scope,$http,$stateParams,inscribeME){
+.controller('PropuestaDetallesCtrl',function($scope,$http,$stateParams,inscribeME,authUsers){
+
+    $scope.logedin = authUsers.isLoggedIn();
+
     var url = urlService+'/propuesta/id_propuesta/'+$stateParams.id_propuesta;
     $http.get(url).
     success(function(data, status, headers, config) {
@@ -222,6 +225,92 @@ angular.module('starter.controllers', ['ngCordova'])
         authUsers.logout();
     }
 })
+.controller("CuentaSubastaCtrl", function($scope, authUsers,$location,$ionicViewService,$http){
+        if(!authUsers.isLoggedIn()) {
+        $ionicViewService.nextViewOptions({
+            disableAnimate: true,
+            disableBack: true
+        });
+        $location.path("/tab/cuenta/login");
+    }
+    $scope.email = window.localStorage.getItem("udp_email");
+    var url = urlService+'/subastas/';
+    $http.get(url).
+        success(function(data, status, headers, config) {
+        $scope.subastas = data;
+    }).
+    error(function(data, status, headers, config) {
+      // log error
+    });
+
+})
+.controller("CuentaSubastaDetalleCtrl", function($ionicLoading,realizarPuja,$stateParams,$scope, authUsers,$location,$ionicViewService,$http){
+        if(!authUsers.isLoggedIn()) {
+        $ionicViewService.nextViewOptions({
+            disableAnimate: true,
+            disableBack: true
+        });
+        $location.path("/tab/cuenta/login");
+    }
+    $scope.email = window.localStorage.getItem("udp_email");
+    var url = urlService+'/subasta'+'/id_subasta/'+$stateParams.id_subasta;;
+    $http.get(url).
+        success(function(data, status, headers, config) {
+        $scope.promocion = data[0];//datos subasta
+    }).
+    error(function(data, status, headers, config) {
+      // log error
+    });
+    var url2 = urlService+'/inscritos_a_subasta'+'/id_subasta/'+$stateParams.id_subasta;;
+    $http.get(url2).
+        success(function(data, status, headers, config) {
+        $scope.numero = data;//numero inscritos en la propuesta
+    }).
+    error(function(data, status, headers, config) {
+      // log error
+    });
+    var urlusuario = urlService+'/user/email/'+window.localStorage.getItem("udp_email");
+    $http.get(urlusuario).
+        success(function(data, status, headers, config) {
+        $scope.usuario = data[0];
+            //$scope.encriptada = SHA512($scope.usuario.password);
+    }).
+    error(function(data, status, headers, config) {
+      // log error
+    });
+     $scope.pujar = function(cantidad,observacion,promocionID){
+        if(($scope.promocion.subasta_puja_ganadora <= cantidad) || (cantidad < 0))
+            $ionicLoading.show({template: 'La puja debe ser menor a la anterior.', duration:1000});
+        else
+            realizarPuja.pujar($scope.usuario.telefono1,cantidad,observacion,$stateParams.id_subasta);
+    }
+
+})
+/*.controller("CuentaSubastaPujaCtrl", function(realizarPuja,$stateParams,$scope, authUsers,$location,$ionicViewService,$http){
+        if(!authUsers.isLoggedIn()) {
+        $ionicViewService.nextViewOptions({
+            disableAnimate: true,
+            disableBack: true
+        });
+        $location.path("/tab/cuenta/login");
+    }
+    $scope.email = window.localStorage.getItem("udp_email");
+    var url = urlService+'/subasta/'+'/id_subasta/'+$stateParams.id_subasta;
+    $http.get(url).
+        success(function(data, status, headers, config) {
+        $scope.subasta = data[0];
+    }).
+    error(function(data, status, headers, config) {
+      // log error
+    });
+     $scope.pujar = function(cantidad,observacion,promocionID){
+        if(cantidad <= $scope.subasta.cantidad)
+            $ionicLoading.show({template: 'La puja debe ser superior a la anterior.', duration:1000});
+        else
+            realizarPuja.pujar(cantidad,observacion,$stateParams.id_subasta);
+    }
+
+})*/
 .controller("CuentaEditarPWCtrl", function($location,$ionicViewService,$ionicLoading,$scope, authUsers,$http,cambioPWS){
     //$scope.email = window.localStorage.getItem("udp_email");
     var url = urlService+'/user/email/'+window.localStorage.getItem("udp_email");
@@ -243,8 +332,9 @@ angular.module('starter.controllers', ['ngCordova'])
         }
 
     }
+
 })
-.controller("CuentaSuscripciones", function($scope, authUsers,$http,editUsers){
+.controller("CuentaSuscripciones", function($scope, authUsers,$http){
     //$scope.email = window.localStorage.getItem("udp_email");
     var url = urlService+'/suscripciones/email/'+window.localStorage.getItem("udp_email");
     $http.get(url).
@@ -254,6 +344,28 @@ angular.module('starter.controllers', ['ngCordova'])
     error(function(data, status, headers, config) {
       // log error
     });
+})
+.controller("CuentaSuscripcionDetalle", function(borrarME,$scope, authUsers,$http,$stateParams){
+    //$scope.email = window.localStorage.getItem("udp_email");
+    var url = urlService+'/promocion/id_promocion/'+$stateParams.id_promocion;
+    $http.get(url).
+    success(function(data, status, headers, config) {
+      $scope.promocion = data[0];
+    }).
+    error(function(data, status, headers, config) {
+      // log error
+    });
+    var urlimagen = urlService+'/imagen/Promocion_id_promocion/'+$stateParams.id_promocion;
+    $http.get(urlimagen).
+    success(function(data, status, headers, config) {
+      $scope.imagen = data[0];
+    }).
+    error(function(data, status, headers, config) {
+      // log error
+    });
+    $scope.borrarME = function(id_promocion){
+        borrarME.borrarME(id_promocion);
+    }
 })
 .controller("CuentaEditarCtrl", function($scope, authUsers,$http,editUsers){
     //$scope.email = window.localStorage.getItem("udp_email");
@@ -275,6 +387,15 @@ angular.module('starter.controllers', ['ngCordova'])
     $http.get(url).
         success(function(data, status, headers, config) {
         $scope.categorias = data;
+    }).
+    error(function(data, status, headers, config) {
+      // log error
+    });
+    var urlusuario = urlService+'/user/email/'+window.localStorage.getItem("udp_email");
+    $http.get(urlusuario).
+        success(function(data, status, headers, config) {
+        $scope.usuario = data[0];
+            //$scope.encriptada = SHA512($scope.usuario.password);
     }).
     error(function(data, status, headers, config) {
       // log error
@@ -346,7 +467,7 @@ angular.module('starter.controllers', ['ngCordova'])
         params.lugar = promocion.lugar;
         params.usuario_email = window.localStorage.getItem("udp_email");
         params.tipo_envio = promocion.tipo_envio;
-
+        params.telefono = $scope.usuario.telefono1;
         options.params = params;
 
         var ft = new FileTransfer();
@@ -552,6 +673,12 @@ angular.module('starter.controllers', ['ngCordova'])
         registerUsers.newRegister(user);
     }
 })
+//Controlador de Contraseña perdida
+.controller("lostPasswordController", function($scope, lostPassword){
+    $scope.lostPassword = function(email){
+        lostPassword.lostPassword(email);
+    }
+})
 //mientras corre la aplicación, comprobamos si el usuario tiene acceso a la ruta a la que está accediendo
 //como vemos inyectamos authUsers
 .run(function($rootScope, $location, authUsers){
@@ -618,6 +745,38 @@ angular.module('starter.controllers', ['ngCordova'])
         }
     }
 })*/
+.factory("borrarME",function($ionicLoading,$http,mensajesFlash,authUsers,$ionicViewService,$location){
+    return{
+            borrarME : function (subastaID) {
+            return $http({
+                url: 'http://fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/example/borrarME/',
+                method: "POST",
+                 data:{
+                    'usuario':window.localStorage.getItem("udp_email"),
+                    'subastaID':subastaID
+                },
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            }).success(function(data){
+                $ionicLoading.show({template: 'Se ha borrado!.', duration:1000});
+                $ionicViewService.nextViewOptions({
+                    disableBack: true
+                    });
+                    //mandamos a la home
+                    $location.path("/tab/cuenta/dashboard");
+            }).error(function(){
+                $ionicLoading.show({template: 'Error!.', duration:1000});
+                mensajesFlash.show("Error critico");
+                // using the ionicViewService to hide the back button on next view
+                $ionicViewService.nextViewOptions({
+                disableBack: true
+                });
+                $location.path("/tab/cuenta/dashboard");
+            })
+    }
+
+    }
+})
+
 .factory("inscribeME",function($http,mensajesFlash,authUsers,$ionicViewService,$location){
     return{
             inscribeME : function (propuestaID) {
@@ -717,8 +876,45 @@ angular.module('starter.controllers', ['ngCordova'])
 
     }
 })
+.factory("realizarPuja",function($ionicLoading,$http,mensajesFlash,authUsers,$ionicViewService,$location){
+    return{
+            pujar : function (telefono,cantidad,observacion,promocionID) {
+            return $http({
+                url: 'http://fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/example/realizarPuja/',
+                method: "POST",
+                 data:{
+                    'telefono':telefono,
+                    'promocionID':promocionID,
+                    'cantidad':cantidad,
+                    'observacion':observacion,
+                    'email': window.localStorage.getItem("udp_email")
+                },
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            }).success(function(data){
+                    if(data.respuesta == "success"){
 
-.factory("editUsers",function($http,mensajesFlash,authUsers,$ionicViewService,$location){
+                $ionicViewService.nextViewOptions({
+                    disableBack: true
+                    });
+                    //mandamos a la home
+                    $location.path("/tab/cuenta/dashboard");
+                }else{
+                    $ionicLoading.show({template: 'Se ha producido un error.', duration:1000});
+                }
+            }).error(function(){
+                $ionicLoading.show({template: 'Se ha producido un error.', duration:1000});
+                // using the ionicViewService to hide the back button on next view
+                $ionicViewService.nextViewOptions({
+                disableBack: true
+                });
+                $location.path("/tab/cuenta/dashboard");
+            })
+    }
+
+    }
+})
+
+.factory("editUsers",function($ionicLoading,$http,mensajesFlash,authUsers,$ionicViewService,$location){
     return{
             editUser : function (user) {
             return $http({
@@ -746,7 +942,7 @@ angular.module('starter.controllers', ['ngCordova'])
                     //mandamos a la home
                     $location.path("/tab/cuenta/dashboard");
             }).error(function(){
-                mensajesFlash.show("Error critico");
+                $ionicLoading.show({template: 'Se ha producido un error.', duration:1000});
                 // using the ionicViewService to hide the back button on next view
                 $ionicViewService.nextViewOptions({
                 disableBack: true
@@ -757,6 +953,46 @@ angular.module('starter.controllers', ['ngCordova'])
 
     }
 })
+.factory("lostPassword", function($http, mensajesFlash,authUsers,$ionicViewService,$location){
+    return {
+        lostPassword : function(email){
+                //var Data = { user: user };
+                
+            return $http({
+                url: 'http://fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/example/lostPassword/',
+                method: "POST",
+                //data : "email="+user.email+"&password="+"3"+"&nombre="+"3",
+               //dataType: 'json',
+                data:{'email':email},
+                //data:{email: user.email},
+                //headers: { 'Content-Type': 'application/json; charset=UTF-8' }
+                headers : {'Content-Type':'application/x-www-form-urlencoded; charset=utf-8'}
+            })
+             //return $http.post('http://fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/example/registroUsuario/',{ user:user } )
+             .success(function(data){
+                    if(data.respuesta == "success"){
+                        mensajesFlash.clear();
+                        mensajesFlash.show_success("Una nueva contraseña a sido mandada a tu correo.");
+
+                        // using the ionicViewService to hide the back button on next view
+                        $ionicViewService.nextViewOptions({
+                            disableBack: true
+                        });
+                        //mandamos a la home
+                    $location.path("/tab/cuenta/login");
+                    }else if(data.respuesta == "failed"){
+                        mensajesFlash.show_error("Ha ocurrido algún error al realizar el roro!.");
+                    }else if(data.respuesta == "error_form"){
+                        mensajesFlash.clear();
+                        mensajesFlash.show_error("Ha ocurrido algún error al realizar el proceso!.");
+                    }
+                }).error(function(){
+                    mensajesFlash.show_error("Ha ocurrido algún error al realizar el registro ERROR MAXIMO!.");
+                })
+        }
+    }
+})
+
 //factoria para registrar usuarios a la que le inyectamos la otra factoria
 //mensajesFlash para poder hacer uso de sus funciones
 .factory("registerUsers", function($http, mensajesFlash,authUsers,$ionicViewService,$location){
@@ -807,6 +1043,16 @@ angular.module('starter.controllers', ['ngCordova'])
         }
     }
 })
+function randomPW()
+{
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    for( var i=0; i < 10; i++ )
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return text;
+}
 //función in_array que usamos para comprobar si el usuario
 //tiene permisos para estar en la ruta actual
 function in_array(needle, haystack, argStrict){

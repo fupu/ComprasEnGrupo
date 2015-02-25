@@ -70,7 +70,15 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
         }
       }
     })
-
+   .state('tab.cuenta-lostpassword', {
+      url: '/cuenta/lostpassword',
+      views: {
+        'tab-cuenta': {
+          templateUrl: 'templates/lostpassword.html',
+          controller: 'lostPasswordController'
+        }
+      }
+    })
     // Each tab has its own nav history stack:
 
     .state('tab.promociones', {
@@ -149,7 +157,24 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
         }
       }
     })
-
+    .state('tab.cuenta-subastas', {
+      url: '/cuenta/subastas',
+      views: {
+        'tab-cuenta': {
+          templateUrl: 'templates/tab-cuenta-subastas.html',
+          controller: 'CuentaSubastaCtrl'
+        }
+      }
+    })
+    .state('tab.cuenta-subasta-detalle', {
+      url: '/cuenta/subastas/:id_subasta',
+      views: {
+        'tab-cuenta': {
+          templateUrl: 'templates/tab-cuenta-subasta-detalle.html',
+          controller: 'CuentaSubastaDetalleCtrl'
+        }
+      }
+    })
     .state('tab.cuenta-anadirpromocion', {
       url: '/cuenta/anadirpromocion',
       views: {
@@ -174,6 +199,15 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
         'tab-cuenta': {
           templateUrl: 'templates/tab-cuenta-suscripciones.html',
           controller: 'CuentaSuscripciones'
+        }
+      }
+    })
+    .state('tab.cuenta-suscripciones-detalle', {
+      url: '/cuenta/suscripciondetalle/:id_promocion',
+      views: {
+        'tab-cuenta': {
+          templateUrl: 'templates/tab-cuenta-suscripcion-detalle.html',
+          controller: 'CuentaSuscripcionDetalle'
         }
       }
     })

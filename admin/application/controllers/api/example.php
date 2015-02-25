@@ -57,6 +57,32 @@ class Example extends REST_Controller
             $this->response(array('error' => 'Couldn\'t find any promocion!'), 404);
         }
     }
+    function realizarPuja_post(){
+        $data = json_decode(trim(file_get_contents('php://input')),true);
+        /*$cantidad = $data['cantidad'];
+        $observacion = $data['observacion'];*/
+
+        $this->load->model('service_model');
+        $puja = $this->service_model->realizarPujaModel($data);
+        $guardarpuja = $this->service_model->guardarPujaModel($data);
+
+        if(($puja === true )&& ($guardarpuja === true)){
+            echo json_encode(array("respuesta" => "success"));
+        }else{
+            echo json_encode(array("respuesta" => "exists"));
+        }
+    }
+    function subastas_get(){
+        $this->load->model('service_model');
+
+        $subastas = $this->service_model->getSubastas();
+
+        if($subastas){
+            $this->response($subastas,200);
+        }else{
+            $this->response(array('error' => 'Couldn\'t find any subastas!'), 404);
+        }
+    }
 
     function promociones_get(){
         $this->load->model('service_model');
@@ -90,7 +116,16 @@ class Example extends REST_Controller
             echo json_encode(array("respuesta" => "failed"));
         }
     }
-
+    function borrarME_post(){
+        $data = json_decode(trim(file_get_contents('php://input')),true);
+        $this->load->model("service_model");
+        $borrado = $this->service_model->borrarInscripcion($data);
+        if($borrado === true){
+            echo json_encode(array("respuesta" => "success"));
+        }else{
+            echo json_encode(array("respuesta" => "failed"));
+        }
+    }
     function promociones_post(){
         $data = json_decode(trim(file_get_contents('php://input')),true);
         $this->load->model("service_model");
@@ -193,7 +228,33 @@ class Example extends REST_Controller
             $this->response(array('error' => 'Couldn\'t find any promocion!'), 404);
         }
     }
-
+    function subasta_get(){
+        $this->load->model('service_model');
+        if(!$this->get('id_subasta'))
+        {
+            $this->response(NULL, 400);
+        }
+        $subasta = $this->service_model->getSubasta( $this->get('id_subasta') );
+        $numero_inscritos = $this->service_model->getInscritos($this->get('id_subasta'));
+        if($subasta){
+            $this->response($subasta,200);
+        }else{
+            $this->response(array('error' => 'Couldn\'t find any subasta!'), 404);
+        }
+    }
+    function inscritos_a_subasta_get(){
+        $this->load->model('service_model');
+        if(!$this->get('id_subasta'))
+        {
+            $this->response(NULL, 400);
+        }
+        $numero_inscritos = $this->service_model->getInscritos($this->get('id_subasta'));
+        if($numero_inscritos == 0 | $numero_inscritos ){ // Si existe o es 0
+            $this->response($numero_inscritos,200);
+        }else{
+            $this->response(array('error' => 'Couldn\'t find any inscritos!'), 404);
+        }
+    }
     function promocion_put(){
         
     }
@@ -234,6 +295,19 @@ class Example extends REST_Controller
             echo json_encode(array("respuesta" => "exists"));
         }
     }
+    function lostPassword_post(){
+        $data = json_decode(trim(file_get_contents('php://input')),true);
+        $email = $data['email'];
+
+        $this->load->model('service_model');
+        $enviada = $this->service_model->reenviarRandom($email);
+        if($enviada === true){
+            echo json_encode(array("respuesta" => "success"));
+        }else{
+            echo json_encode(array("respuesta" => "error"));
+        }
+    }
+
     function registroUsuario_get(){
         $email = "TEST";
         $password = "TEST";
@@ -361,7 +435,7 @@ class Example extends REST_Controller
         }
     }
     function uploadPhotooPropu_post(){
-        $tiempo=date("Y-m-d", strtotime("+7 days"));
+        $tiempo=date("Y-m-d H:i:s", strtotime("+7 days"));
         $data = array(
             'producto'       =>   $_POST['producto'],
             'descripcion'    =>   $_POST['descripcion'],
@@ -400,7 +474,7 @@ class Example extends REST_Controller
             'observacion'          =>   $_POST['observacion'],
             'categoria_id_categoria'       =>   $_POST['categoria'],
             'lugar'    =>   $_POST['lugar'],
-            //'email_proponente'       =>   $data['email_proponente'],
+            'telefono'       =>   $_POST['telefono'],
             'fecha_fin_inscripcion' =>  $tiempo,
             'Usuario_email'    =>   $_POST['usuario_email'],
             'tipo_envio'   =>   $_POST['tipo_envio'],

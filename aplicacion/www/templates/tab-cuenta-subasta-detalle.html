@@ -1,0 +1,31 @@
+<ion-view title="{{ promocion.producto }}">
+  <ion-content has-header="true" padding="true">
+  	<div class="card">
+      <img class="full-image"  src="http://www.fupudev.com/comprasengrupo/ComprasEnGrupo/admin/uploads/{{promocion.imagen}}">
+      <h2>{{promocion.producto}}</h2>
+      <p>Descripción: {{promocion.descripcion}}</p>
+      <p ng-show="promocion.tipo_envio != null">Tipo de envio: {{promocion.tipo_envio}}</p>
+      <p ng-show="promocion.observacion != null">Observaciones: {{promocion.observacion}}</p>
+      <p>Fecha fin subasta: {{promocion.subasta_fecha_fin}}</p>
+      <p ng-show="promocion.subasta_puja_ganadora != null">Ultima puja ganadora: {{promocion.subasta_puja_ganadora}} €</p>
+      <p ng-show="promocion.subasta_puja_ganadora == null">Ultima puja: No hay pujas.</p>
+      <p >Numero inscritos: {{numero}}</p>
+    </div>
+    <div class="list">
+        <div class="item item-divider">
+        ¿Cual es tu puja?
+       </div>
+        <label class="item item-input item-stacked-label">
+          <span class="input-label">Cantidad:</span>
+          <input type="number" placeholder="Introduce la cantidad que deseas" ng-model="cantidad">
+        </label>
+        <label class="item item-input item-stacked-label">
+          <span class="input-label">Observaciones:</span>
+          <input type="text" placeholder="Introduce cualquier observación que quieras detallar" ng-model="observacion">
+        </label>
+      <div class="button-bar">
+        <button ng-click="pujar(cantidad,observacion,subasta.id_promocion)" class="button icon ion-bag">Realizar Pujar</button>
+      </div>
+    </div>
+</ion-content>
+</ion-view>

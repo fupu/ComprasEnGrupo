@@ -1,0 +1,16 @@
+<ion-view title="Pujar para {{subasta.producto}}">
+  <ion-content class="padding">
+		<div class="list">
+  			<label class="item item-input item-stacked-label">
+    			<span class="input-label">Cantidad:</span>
+    			<input type="numeric" placeholder="Introduce la cantidad que deseas" ng-model="cantidad">
+  			</label>
+        <label class="item item-input item-stacked-label">
+          <span class="input-label">Observaciones:</span>
+          <input type="text" placeholder="Introduce cualquier observación que quieras detallar" ng-model="observacion">
+        </label>
+
+  			<button ng-click="pujar(cantidad,observacion,subasta.id_promocion)" class="button button-block">Pujar</button>
+</div>
+  </ion-content>
+</ion-view>
