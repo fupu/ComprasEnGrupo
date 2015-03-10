@@ -150,7 +150,7 @@ angular.module('starter.controllers', ['ngCordova'])
         login : function(user){
             return $http({
 
-                url: 'http://fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/example/loginUser/',
+                url: 'http://fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/comprasengrupo/loginUser/',
                 method: "POST",
                  data:{'email':user.email,'password':SHA512(user.password)},
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
@@ -472,7 +472,7 @@ angular.module('starter.controllers', ['ngCordova'])
 
         var ft = new FileTransfer();
         $ionicLoading.show({template: 'Se esta subiendo la foto...',duration:5000});
-        ft.upload(fileURL, encodeURI("http://www.fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/example/uploadPhotoo"), win, function(error) {$ionicLoading.show({template: 'Error de conexión...'});
+        ft.upload(fileURL, encodeURI("http://www.fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/comprasengrupo/uploadPhotoo"), win, function(error) {$ionicLoading.show({template: 'Error de conexión...'});
         $ionicLoading.hide();}, options);
         function win(r) {
             $ionicLoading.show({template: 'Sa ha subido la promoción con exito...',duration:1000});
@@ -598,7 +598,7 @@ angular.module('starter.controllers', ['ngCordova'])
 
         var ft = new FileTransfer();
         $ionicLoading.show({template: 'Se esta subiendo la foto...',duration:5000});
-        ft.upload(fileURL, encodeURI("http://www.fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/example/uploadPhotooPropu"), win, function(error) {$ionicLoading.show({template: 'Error de conexión...'});
+        ft.upload(fileURL, encodeURI("http://www.fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/comprasengrupo/uploadPhotooPropu"), win, function(error) {$ionicLoading.show({template: 'Error de conexión...'});
         $ionicLoading.hide();}, options);
         function win(r) {
             $ionicLoading.show({template: 'Sa ha subido la propuesta con exito...',duration:1000});
@@ -749,7 +749,7 @@ angular.module('starter.controllers', ['ngCordova'])
     return{
             borrarME : function (subastaID) {
             return $http({
-                url: 'http://fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/example/borrarME/',
+                url: 'http://fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/comprasengrupo/borrarME/',
                 method: "POST",
                  data:{
                     'usuario':window.localStorage.getItem("udp_email"),
@@ -781,7 +781,7 @@ angular.module('starter.controllers', ['ngCordova'])
     return{
             inscribeME : function (propuestaID) {
             return $http({
-                url: 'http://fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/example/inscribeME/',
+                url: 'http://fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/comprasengrupo/inscribeME/',
                 method: "POST",
                  data:{
                     'usuario':window.localStorage.getItem("udp_email"),
@@ -813,7 +813,7 @@ angular.module('starter.controllers', ['ngCordova'])
             anadirPromocion : function (promocion) {
                 //$scope.email = window.localStorage.getItem("udp_email");
             return $http({
-                url: 'http://fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/example/promociones/',
+                url: 'http://fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/comprasengrupo/promociones/',
                 method: "POST",
                  data:{
                     'producto':promocion.producto,
@@ -850,7 +850,7 @@ angular.module('starter.controllers', ['ngCordova'])
     return{
             cambioPW : function (newpasswordencrypted,usuario) {
             return $http({
-                url: 'http://fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/example/cambioPW/',
+                url: 'http://fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/comprasengrupo/cambioPW/',
                 method: "POST",
                  data:{
                     'email':usuario.email,
@@ -880,7 +880,7 @@ angular.module('starter.controllers', ['ngCordova'])
     return{
             pujar : function (telefono,cantidad,observacion,promocionID) {
             return $http({
-                url: 'http://fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/example/realizarPuja/',
+                url: 'http://fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/comprasengrupo/realizarPuja/',
                 method: "POST",
                  data:{
                     'telefono':telefono,
@@ -918,7 +918,7 @@ angular.module('starter.controllers', ['ngCordova'])
     return{
             editUser : function (user) {
             return $http({
-                url: 'http://fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/example/updateUser/',
+                url: 'http://fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/comprasengrupo/updateUser/',
                 method: "POST",
                  data:{
                     'email':user.email,
@@ -959,7 +959,7 @@ angular.module('starter.controllers', ['ngCordova'])
                 //var Data = { user: user };
                 
             return $http({
-                url: 'http://fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/example/lostPassword/',
+                url: 'http://fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/comprasengrupo/lostPassword/',
                 method: "POST",
                 //data : "email="+user.email+"&password="+"3"+"&nombre="+"3",
                //dataType: 'json',
@@ -968,7 +968,7 @@ angular.module('starter.controllers', ['ngCordova'])
                 //headers: { 'Content-Type': 'application/json; charset=UTF-8' }
                 headers : {'Content-Type':'application/x-www-form-urlencoded; charset=utf-8'}
             })
-             //return $http.post('http://fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/example/registroUsuario/',{ user:user } )
+             //return $http.post('http://fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/comprasengrupo/registroUsuario/',{ user:user } )
              .success(function(data){
                     if(data.respuesta == "success"){
                         mensajesFlash.clear();
@@ -1001,7 +1001,7 @@ angular.module('starter.controllers', ['ngCordova'])
         		//var Data = { user: user };
         		
             return $http({
-                url: 'http://fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/example/registroUsuario/',
+                url: 'http://fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/comprasengrupo/registroUsuario/',
                 method: "POST",
                 //data : "email="+user.email+"&password="+"3"+"&nombre="+"3",
                //dataType: 'json',
@@ -1010,7 +1010,7 @@ angular.module('starter.controllers', ['ngCordova'])
                 //headers: { 'Content-Type': 'application/json; charset=UTF-8' }
                 headers : {'Content-Type':'application/x-www-form-urlencoded; charset=utf-8'}
             })
-             //return $http.post('http://fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/example/registroUsuario/',{ user:user } )
+             //return $http.post('http://fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/comprasengrupo/registroUsuario/',{ user:user } )
              .success(function(data){
                     if(data.respuesta == "success"){
                         mensajesFlash.clear();
