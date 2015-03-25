@@ -77,15 +77,6 @@ angular.module('starter.controllers', ['ngCordova'])
     error(function(data, status, headers, config) {
       // log error
     });
-    var url2 = urlService+'/promocionesPayPal';
-  $http.get(url2).
-    success(function(data, status, headers, config) {
-      $scope.promocionesPayPal = data;
-    }).
-    error(function(data, status, headers, config) {
-      // log error
-    });
-
     /*var urlimagenes = urlService+'/imagenes';
     $http.get(urlimagenes).
     success(function(data, status, headers, config) {

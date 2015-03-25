@@ -11,17 +11,12 @@
             <input placeholder="Buscar" type="text" ng-model="searchText">
           </label>
   <div class="list"> 
-    <a ng-repeat="promocionPayPal in promocionesPayPal | filter:searchText" class="item item-thumbnail-left" href="#/tab/promociones/{{promocionPayPal.id_promocion}}">
-      <img src="http://www.fupudev.com/comprasengrupo/ComprasEnGrupo/admin/uploads/{{promocionPayPal.imagen}}">
-      <h2>{{promocionPayPal.producto}}</h2>
-      <p>{{promocionPayPal.descripcion}}</p>
-      <p>Opción de Pago con PayPal</p>
-    </a>
-
     <a ng-repeat="promocion in promociones | filter:searchText" class="item item-thumbnail-left" href="#/tab/promociones/{{promocion.id_promocion}}">
       <img src="http://www.fupudev.com/comprasengrupo/ComprasEnGrupo/admin/uploads/{{promocion.imagen}}">
       <h2>{{promocion.producto}}</h2>
       <p>{{promocion.descripcion}}</p>
+      <p ng-show="promocion.tipo == 5">Opción de Pago con PayPal</p>
+
     </a>
 </div>
   </ion-content>
