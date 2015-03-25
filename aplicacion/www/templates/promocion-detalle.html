@@ -15,6 +15,7 @@
       	<a class="button icon ion-ios7-email" href="mailto:{{ promocion.Usuario_email }}?subject=Compras En Grupo - {{promocion.producto}}" target="_blank"></a>
       <!--<a href="mailto:{{promocion.email}}" class="icon ion-ios7-email"></a>-->
     </div>
+    <div ng-show="promocion.tipo == 5">
     <div ng-show="logedin" id="deviceready" class="">
         <p class="event listening"></p>
         <p class="event received"></p>     
@@ -29,6 +30,7 @@
        <a  class="button button-block"  href="#/tab/cuenta/login">
         Registrate y paga con Paypal
     </a>
+    </div>
     </div>
   </ion-content>
 </ion-view>

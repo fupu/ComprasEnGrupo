@@ -95,6 +95,18 @@ class Comprasengrupoapi extends REST_Controller
             $this->response(array('error' => 'Couldn\'t find any promociones!'), 404);
         }
     }
+    function promocionesPayPal_get(){
+        $this->load->model('service_model');
+
+        $promociones = $this->service_model->getPromocionesPayPal();
+
+        if($promociones){
+            $this->response($promociones,200);
+        }else{
+            $this->response(array('error' => 'Couldn\'t find any promociones!'), 404);
+        }
+    }
+
     function propuestas_get(){
         $this->load->model('service_model');
 

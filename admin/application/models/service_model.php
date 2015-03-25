@@ -14,12 +14,27 @@ class Service_model extends CI_Model
 		$this->db->order_by('fecha_creacion', 'desc');
 		//$this->db->limit(5);
 		$this->db->where('tipo', '0'); //PROMOCION
+
 		$query = $this->db->get('promocion');
 
 		$result = $query->result_array();
 
 		return $result;
 	}
+	function getPromocionesPayPal()
+	{
+		//$this->db->get('promocion');
+		$this->db->order_by('fecha_creacion', 'desc');
+		//$this->db->limit(5);
+		$this->db->where('tipo', '5'); //PROMOCION
+
+		$query = $this->db->get('promocion');
+
+		$result = $query->result_array();
+
+		return $result;
+	}
+
 	//Lista con todas las subastas
 	function getSubastas()
 	{

@@ -33,7 +33,7 @@ angular.module('starter.controllers', ['ngCordova'])
 })
 
 //Controlador de una propuesta en concreto.
-.controller('PropuestaDetallesCtrl',function($scope,$http,$stateParams,inscribeME,authUsers,stripeCheckout,Products){
+.controller('PropuestaDetallesCtrl',function($scope,$http,$stateParams,inscribeME,authUsers){
 
     $scope.logedin = authUsers.isLoggedIn();
 
@@ -77,6 +77,15 @@ angular.module('starter.controllers', ['ngCordova'])
     error(function(data, status, headers, config) {
       // log error
     });
+    var url2 = urlService+'/promocionesPayPal';
+  $http.get(url2).
+    success(function(data, status, headers, config) {
+      $scope.promocionesPayPal = data;
+    }).
+    error(function(data, status, headers, config) {
+      // log error
+    });
+
     /*var urlimagenes = urlService+'/imagenes';
     $http.get(urlimagenes).
     success(function(data, status, headers, config) {
@@ -432,7 +441,7 @@ $scope.payWithPaypal = function(price) {
       // log error
     });
      $scope.pujar = function(cantidad,observacion,promocionID){
-        if(($scope.promocion.subasta_puja_ganadora <= cantidad) || (cantidad < 0))
+        if((($scope.promocion.subasta_puja_ganadora <= cantidad) || (cantidad < 0)) && $scope.promocion.subasta_puja_ganadora != null)
             $ionicLoading.show({template: 'La puja debe ser menor a la anterior.', duration:1000});
         else
             realizarPuja.pujar($scope.usuario.telefono1,cantidad,observacion,$stateParams.id_subasta);
@@ -1052,7 +1061,14 @@ $scope.payWithPaypal = function(price) {
                     //mandamos a la home
                     $location.path("/tab/cuenta/dashboard");
                 }else{
-                    $ionicLoading.show({template: 'Se ha producido un error.', duration:1000});
+                    $ionicLoading.show({template: 'Se introducido sin observacion.', duration:1000});
+                  
+                // using the ionicViewService to hide the back button on next view
+                $ionicViewService.nextViewOptions({
+                disableBack: true
+                });
+                $location.path("/tab/cuenta/dashboard");
+
                 }
             }).error(function(){
                 $ionicLoading.show({template: 'Se ha producido un error.', duration:1000});
