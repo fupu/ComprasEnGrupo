@@ -1,11 +1,17 @@
 <ion-view title="{{categoria.categoria}}">
   <ion-content class="padding">
   <div class="list">
-
-    <a ng-repeat="promocion in promociones" class="item item-thumbnail-left" href="#/tab/buscar/filtro/promocion/{{promocion.id_promocion}}">
-      <img src="http://www.fupudev.com/comprasengrupo/ComprasEnGrupo/admin/imagenes/1{{promocion.id_promocion}}.jpg">
+    <a  ng-repeat="promocion in promociones" class="item item-thumbnail-left" href="#/tab/buscar/filtro/promocion/{{promocion.id_promocion}}">
+      <img src="http://www.fupudev.com/comprasengrupo/ComprasEnGrupo/admin/uploads/{{promocion.imagen}}">
       <h2>{{promocion.producto}}</h2>
       <p>{{promocion.descripcion}}</p>
+      <p ng-show="promocion.tipo == 5">Opción de Pago con PayPal</p>
+    </a>
+    <a ng-show="propuesta.tipo == 1" ng-repeat="propuesta in promociones" class="item item-thumbnail-left" href="#/tab/buscar/filtro/propuesta/{{propuesta.id_promocion}}">
+      <img src="http://www.fupudev.com/comprasengrupo/ComprasEnGrupo/admin/uploads/{{propuesta.imagen}}">
+      <h2>{{propuesta.producto}}</h2>
+      <p>{{propuesta.descripcion}}</p>
+      <p>Propuesta</p>
     </a>
 </div>
   </ion-content>

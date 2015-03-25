@@ -78,7 +78,12 @@ class Service_model extends CI_Model
 		if($categoria != 'undefined'){
 			$this->db->where('categoria_id_categoria', $categoria);
 		}
+		$this->db->order_by('fecha_creacion', 'desc');
 
+		$this->db->where('tipo', '0 '); //PROMOCION
+		$this->db->or_where('tipo','5'); //PROMOCION CON PAYPAL
+		$this->db->or_where('tipo','1'); //Propuesta 
+		
         $this->db->from('promocion');
 
 		$query = $this->db->get();

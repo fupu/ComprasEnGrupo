@@ -130,6 +130,15 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
         }
       }
     })
+    .state('tab.buscar-filtro-detalle-propuesta', {
+      url: '/buscar/filtro/propuesta/:id_promocion',
+      views: {
+        'tab-buscar': {
+          templateUrl: 'templates/propuesta-detalle.html',
+          controller: 'PropuestaDetallesCtrl'
+        }
+      }
+    })
 
     //Estado donde se listan las propuestas
     .state('tab.propuestas', {
