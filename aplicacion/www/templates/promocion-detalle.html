@@ -4,8 +4,15 @@
   The FriendsCtrl pulls data from the Friends service (service.js)
   The Friends service returns an array of friend data
 -->
+
 <ion-view title="{{ promocion.producto }}">
   <ion-content has-header="true" padding="true">
+          <a  ng-show="paid==false" class="button button-{{customClass}} button-block" ng-click="payWithPaypal(promocion.precio)">
+            Pay With PayPal
+        </a>
+        <a  ng-show="paid==true" class="button button-{{customClass}} button-block">
+            <i class="icon ion-checkmark-round"></i> Paid
+        </a>
   	<div class="card">
       <img class="full-image"  src="http://www.fupudev.com/comprasengrupo/ComprasEnGrupo/admin/uploads/{{imagen.imagen}}">
       <h2>{{promocion.producto}}</h2>
@@ -21,5 +28,19 @@
       	<a class="button icon ion-ios7-email" href="mailto:{{ promocion.Usuario_email }}?subject=Compras En Grupo - {{promocion.producto}}" target="_blank"></a>
       <!--<a href="mailto:{{promocion.email}}" class="icon ion-ios7-email"></a>-->
     </div>
+                <div id="deviceready" class="">
+                    <p class="event listening"></p>
+                    <p class="event received"></p>         
+                </div>
+        <a  ng-show="paid==false" class="button button-{{customClass}} button-block" ng-click="payWithPaypal()">
+            Pay With PayPal
+        </a>
+        <a  ng-show="paid==true" class="button button-{{customClass}} button-block">
+            <i class="icon ion-checkmark-round"></i> Paid
+        </a>
+ 
+
+
+
   </ion-content>
 </ion-view>

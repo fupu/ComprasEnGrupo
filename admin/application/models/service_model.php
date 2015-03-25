@@ -259,7 +259,7 @@ class Service_model extends CI_Model
             'poblacion'	   =>	$data['poblacion'],
             'apellidos'	   =>	$data['apellidos'],
             'cod_postal'   =>	$data['cod_postal'],
-            'website'	   =>	$data['website'],
+            'website'	   =>	$data['website']
         );
         $this->db->where('email',$data['email']);
         $this->db->update('usuario',$datos);

@@ -130,6 +130,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
         }
       }
     })
+
+    //Estado donde se listan las propuestas
     .state('tab.propuestas', {
       url: '/propuestas',
       views: {
@@ -139,6 +141,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
         }
       }
     })
+    // Estado de una propuesta en concreto
     .state('tab.propuesta-detalle', {
       url: '/propuestas/:id_propuesta',
       views: {
@@ -148,6 +151,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
         }
       }
     })
+    
     .state('tab.cuenta', {
       url: '/cuenta/dashboard',
       views: {

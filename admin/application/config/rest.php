@@ -1,9 +1,10 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 		// Allow CORS
     header('Access-Control-Allow-Origin: *');
-    header('Access-Control-Allow-Credentials: true');    
+    header('Access-Control-Allow-Credentials: true');   
     header("Access-Control-Allow-Methods: GET,POST,PUT,HEAD,DELETE,OPTIONS"); 
     header('Access-Control-Allow-Headers: Origin,content-Type,x-requested-with,Accept,Content-Length, Accept-Encoding');
+
 
 
 /*

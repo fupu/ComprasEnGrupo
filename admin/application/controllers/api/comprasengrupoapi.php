@@ -259,7 +259,24 @@ class Comprasengrupoapi extends REST_Controller
         
     }
 
+    //Esta función obtiene todos los usuarios registrados en nuestra aplicación
+    function users_get()
+    {
+        $this->load->model('service_model');
 
+        $users = $this->service_model->getUsers();
+        
+        if($users)
+        {
+            $this->response($users, 200); // 200 being the HTTP response code
+        }
+
+        else
+        {
+            $this->response(array('error' => 'No hemos encontrado usuarios!'), 404);
+        }
+    }
+    //Esta función obtiene un usuario en concredo pasando el email como parametro
 	function user_get()
     {
         $this->load->model('service_model');
@@ -278,7 +295,7 @@ class Comprasengrupoapi extends REST_Controller
 
         else
         {
-            $this->response(array('error' => 'User could not be found'), 404);
+            $this->response(array('error' => 'No hemos encontrado el usuario'), 404);
         }
     }
 
@@ -403,22 +420,6 @@ class Comprasengrupoapi extends REST_Controller
         $this->response($message, 200); // 200 being the HTTP response code
     }
     
-    function users_get()
-    {
-        $this->load->model('service_model');
-
-        $users = $this->service_model->getUsers();
-        
-        if($users)
-        {
-            $this->response($users, 200); // 200 being the HTTP response code
-        }
-
-        else
-        {
-            $this->response(array('error' => 'Couldn\'t find any users!'), 404);
-        }
-    }
     function do_upload_post(){
 
         $config['upload_path'] = 'uploads/';
