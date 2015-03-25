@@ -467,6 +467,64 @@ class Service_model extends CI_Model
             return false;
         }*/
     }
+    //Comprueba si ya ha comrpado antes esta promocion.
+    function YaHaCompradoAntes($data){
+    	$this->db->where('Usuario_email', $data['email']);
+    	$this->db->where('Promocion_id_promocion', $data['promocion_id']);
+        $this->db->from('lista_compra');
+
+        if($this->db->count_all_results() != 1){
+        	return false;
+        }else{
+        	return true;
+    	}
+    }
+
+    function pagoPayPal($data){
+		$this->load->library('email');
+        $datos = array(
+            'comprado'        =>      '1',
+            'Promocion_id_promocion'         =>      $data['promocion_id'],
+            'Usuario_email'      =>      $data['email'] 
+        );
+        //Comprueba si ya ha comrpado antes esta promocion, Si la a comprado antes la actualiza +1, sino inserta
+		if($this->YaHaCompradoAntes($data)){
+        	$this->db->where('Usuario_email',$data['email']);
+        	$this->db->where('Promocion_id_promocion',$data['promocion_id']);
+        	$this->db->set('comprado', 'comprado+1', FALSE);//+1 en comprado, para tantos como compre
+        	$this->db->update('lista_compra');
+        }else{
+        	$this->db->insert('lista_compra',$datos);        	
+        }
+        if($this->db->affected_rows() != 1){
+        	return false;
+        }else{
+        			$this->email->from('info@fupudev.com', 'ComprasEnGrupo');
+		$this->email->to($data['email']);
+		//$this->email->bcco('mit0.xavi@gmail.com'); 
+
+		$this->email->subject('Compras En Grupo');
+
+		$this->email->message('Se a realizado su compra con exito, en breve realizaremos en envio.');	
+
+		$this->email->send();
+
+		$this->email->clear();
+
+		$this->email->from('info@fupudev.com', 'ComprasEnGrupo');
+		$this->email->to('info@fupudev.com');
+		//$this->email->bcco('mit0.xavi@gmail.com'); 
+
+		$this->email->subject('Compras En Grupo PayPal');
+
+		$this->email->message('Usuario : '.$data['email'].'Promocion: '.$data['promocion_id']);	
+
+		$this->email->send();
+
+        	return true;
+    	}
+    }
+
     function borrarInscripcion($data){
     	$this->db->where('Usuario_email',$data['usuario']);
         $this->db->where('Promocion_id_promocion',$data['subastaID']);

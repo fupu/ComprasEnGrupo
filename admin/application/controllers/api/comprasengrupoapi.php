@@ -324,7 +324,20 @@ class Comprasengrupoapi extends REST_Controller
             echo json_encode(array("respuesta" => "error"));
         }
     }
+    function pagoPayPalPromocion_post(){
+        $data = json_decode(trim(file_get_contents('php://input')),true);
+        $email = $data['email'];
+        $promocion_id = $data['promocion_id'];
 
+        $this->load->model('service_model');
+        $guardado = $this->service_model->pagoPayPal($email,$promocion_id);
+        if($guardado === true){
+            echo json_encode(array("respuesta" => "success"));
+        }else{
+            echo json_encode(array("respuesta" => "error"));
+        }
+
+    }
     function registroUsuario_get(){
         $email = "TEST";
         $password = "TEST";

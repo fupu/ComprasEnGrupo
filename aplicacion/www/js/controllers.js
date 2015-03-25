@@ -89,7 +89,10 @@ angular.module('starter.controllers', ['ngCordova'])
 /*.controller('PromocionDetallesCtrl', function($scope, $stateParams, Promociones) {
   $scope.promociones = Promociones.get($stateParams.id_promocion);
 })*/
-.controller('PromocionDetallesCtrl',function($ionicLoading,$scope,$http,$stateParams,$rootScope,$timeout,$ionicModal){
+.controller('PromocionDetallesCtrl',function($ionicLoading,$scope,$http,$stateParams,$rootScope,$timeout,$ionicModal,pagoPayPalPromocion,authUsers){
+    
+    $scope.logedin = authUsers.isLoggedIn(); //comprueba si es un usuairo autenticado
+
     var url = urlService+'/promocion/id_promocion/'+$stateParams.id_promocion;
     $http.get(url).
     success(function(data, status, headers, config) {
@@ -105,21 +108,11 @@ angular.module('starter.controllers', ['ngCordova'])
     }).
     error(function(data, status, headers, config) {
       // log error
-    });
-  // Form data for the login and reset password modal
-    $scope.loginData = {};
-    $scope.resetData = {};
-    $scope.registerData = {};
-        
-    $scope.back = function() {
-       $ionicHistory.goBack();
-    };
-    
-    
-//// PayPal Function ////
+    });    
+//// Funcion de PayPal  
     
 $rootScope.paid = false;
-    
+
 $scope.payWithPaypal = function(price) {
             
             $ionicLoading.show({
@@ -190,7 +183,8 @@ $scope.payWithPaypal = function(price) {
             onSuccesfulPayment : function(payment) {
             // console.log("payment success: " + JSON.stringify(payment, null, 4));
             // document.getElementById("paypalStatus").innerHTML = "Payment received!";
-            
+            pagoPayPalPromocion.pagoPayPalPromocion($scope.promocion.id_promocion);
+
             $timeout(function() {
                 $rootScope.paid = true;
             }, 1000);
@@ -257,214 +251,12 @@ $scope.payWithPaypal = function(price) {
             }
             };
             
-            
-            
-            $timeout(function() {                     $ionicLoading.hide();
-
-                     app.initialize();
+            $timeout(function() {
+                    $ionicLoading.hide();                     
+                    app.initialize();
                      }, 1000);
 
          }
-    
-    
-//// Login Modal ///
-  // Create the login modal
-  $ionicModal.fromTemplateUrl('templates/login.html', {
-    scope: $scope
-  }).then(function(modal) {
-    $scope.loginModal = modal;
-  });
-
-  // Triggered in the login modal to close it
-  $scope.closeLogin = function() {
-    $scope.loginModal.hide();
-  };
-
-  // Open the login modal
-  $scope.login = function() {
-    $scope.loginModal.show();
-    $scope.registerModal.hide();
-  };
-
-  // Perform the login action when the user submits the login form
-  $scope.doLogin = function() {
-      Parse.User.logIn($scope.loginData.username, $scope.loginData.password, {
-        success: function(user) { 
-            
-            // saving current user 
-            $rootScope.currentUser = [];
-            var currentUser = Parse.User.current();
-                if (currentUser && currentUser.get('emailVerified') == "1") {
-                    $rootScope.currentUser = currentUser;
-                    $rootScope.currentUser.email = currentUser.get('email');
-                } else if (currentUser && currentUser.get('emailVerified') == "0") {
-                    var alertPopup = $ionicPopup.alert({
-                        title: 'Oops',
-                        template: 'Please verify your email.'
-                    });
-                        alertPopup.then(function(res) {
-     
-                    });
-                    $rootScope.currentUser = null;
-                    $rootScope.currentUser.email = null;
-                    
-                } 
-            
-            $scope.loginModal.hide();                
-            // Do stuff after successful login.
-        },
-        error: function(user, error) {
-            // The login failed. Check error to see why.
-           $ionicPopup.alert({
-     title: 'Oops',
-     template: error.message
-   });
-        }
-      });
-
-  };
-    
-    // Perform the logout action when the user press logout
-    $scope.doLogout = function() {
-            Parse.User.logOut();
-            
-            $state.transitionTo("app.home");
-            $rootScope.currentUser = null;
-    };
-   
-
-//// Register User Modal ///
-  // Create the modal
-  $ionicModal.fromTemplateUrl('templates/register.html', {
-    scope: $scope
-  }).then(function(modal) {
-    $scope.registerModal = modal;
-  });
-
-  // Triggered in the login modal to close it
-  $scope.closeRegister = function() {
-    $scope.registerModal.hide();
-  };
-
-  // Open the login modal
-  $scope.register = function() {
-    $scope.registerModal.show();
-      $scope.loginModal.hide();
-  };
-
-  // Perform the register action when the user submits the form
-  $scope.doRegister = function() {      
-      
-    if($scope.registerData.coords) {
-        var coords = $scope.registerData.coords;   
-    } else {
-        var coords = new Parse.GeoPoint({latitude: 0, longitude: 0});
-    }
-      
-      var user = new Parse.User();
-        user.set("username", $scope.registerData.username);
-        user.set("password", $scope.registerData.password);
-        user.set("email", $scope.registerData.email);
-        user.set("phone", $scope.registerData.phone);
-        user.set("location", $scope.registerData.location);
-      
-      user.set("coords", coords);
-    user.signUp(null, {
-        success: function(user) {
-            // Hooray! Let them use the app now.
-            $scope.registerModal.hide();
-            $ionicPopup.alert({
-                title: 'Success!',
-                template: 'Check your email in order to activate your account'
-                });        
-        },
-        error: function(user, error) {
-            // Show the error message somewhere and let the user try again.
-    $ionicPopup.alert({
-     title: 'Oops',
-     template: error.message
-   });
-        }
-    });
-
-  };
-    
-
-    
-//// Reset Password Modal ///
-     // Create the reset password modal
-    $ionicModal.fromTemplateUrl('templates/reset.html', {
-    scope: $scope
-    }).then(function(modal) {
-        $scope.resetModal = modal;
-    });
-
-    // Triggered in the reset password modal to close it
-    $scope.closeReset = function() {
-        $scope.resetModal.hide();
-    };
-
-    // Open the reset password modal
-    $scope.reset = function() {
-        $scope.resetModal.show();
-    };
-
-    // Perform the reset password action when the user submits the email address
-    $scope.doReset = function() {
-    Parse.User.requestPasswordReset($scope.resetData.email, {
-        success: function() {
-            $ionicPopup.alert({
-                title: 'Success!',
-                template: 'Check your email in order to reset your password'
-            });
-
-    $scope.resetModal.hide();
-        // Password reset request was sent successfully
-    },
-    error: function(error) {
-        // Show the error message somewhere
-    var alertPopup = $ionicPopup.alert({
-        title: 'Oops',
-        template: error.message
-    });
-    alertPopup.then(function(res) {
-     
-   });
-  }
-});
-}; 
-    
-  
-// Getting Location 
-    $rootScope.getLocation = function() {
-        var onGeoSuccess = function(position) {
-        var latlng = position.coords.latitude + ', ' + position.coords.longitude;
-                    
-        // Get location (city name, state)
-        locationService.getLocation(latlng).then(function(location){
-        var itemLocation = 
-            location.results[0].address_components[4].long_name+
-            ', ' +
-            location.results[0].address_components[5].long_name;
-        $scope.registerData.location = itemLocation;
-        $scope.registerData.coords = new Parse.GeoPoint({latitude: position.coords.latitude, longitude: position.coords.longitude});
-            
-        $rootScope.userLocation = itemLocation;
-        $rootScope.userCoords = latlng;
-            
-            },function(error){
-                // Something went wrong!
-            });
-        };
-
-        // onError Callback receives a PositionError object
-        function onGeoError(error) {
-            alert(error.message);
-        }
-
-        navigator.geolocation.getCurrentPosition(onGeoSuccess, onGeoError); 
-    }
-
 })
 
 
@@ -1314,6 +1106,29 @@ $scope.payWithPaypal = function(price) {
 
     }
 })
+.factory("pagoPayPalPromocion", function($http,authUsers,$ionicViewService,$location,mensajesFlash){
+    return {
+        pagoPayPalPromocion : function(promocion_id){
+                
+            return $http({
+                url: 'http://fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/comprasengrupoapi/pagoPayPalPromocion/',
+                method: "POST",
+                data:{
+                    'promocion_id':promocion_id,
+                    'email':window.localStorage.getItem('udp_email')
+                },
+                headers : {'Content-Type':'application/x-www-form-urlencoded; charset=utf-8'}
+            })
+             .success(function(data){
+                //Funciones a realizar si la operación a sido satisfactoria
+                }).error(function(){
+                //Funciones a realizar si la operación no a sido satisfactoria
+
+                })
+        }
+    }
+})
+
 .factory("lostPassword", function($http, mensajesFlash,authUsers,$ionicViewService,$location){
     return {
         lostPassword : function(email){
