@@ -10,11 +10,15 @@ class Service_model extends CI_Model
 	
 	function getPromociones()
 	{
+		$fecha_actual = strtotime(date("d-m-Y H:i:00",time()));
+
 		//$this->db->get('promocion');
 		$this->db->order_by('fecha_creacion', 'desc');
 		//$this->db->limit(5);
+		$this->db->where('fecha_fin_inscripcion <', $fecha_actual); // Muestra solo las activas
 		$this->db->where('tipo', '0 '); //PROMOCION
 		$this->db->or_where('tipo','5'); //PROMOCION CON PAYPAL
+
 		$query = $this->db->get('promocion');
 
 		$result = $query->result_array();
@@ -74,16 +78,20 @@ class Service_model extends CI_Model
 	}
 
 	function getPromocionesporCategoria($categoria)
-	{
-		if($categoria != 'undefined'){
-			$this->db->where('categoria_id_categoria', $categoria);
-		}
+	{		
+		$fecha_actual=date("Y-m-d H:i:s", strtotime("now"));
+
 		$this->db->order_by('fecha_creacion', 'desc');
 
-		$this->db->where('tipo', '0 '); //PROMOCION
-		$this->db->or_where('tipo','5'); //PROMOCION CON PAYPAL
-		$this->db->or_where('tipo','1'); //Propuesta 
-		
+		if($categoria != 'undefined'){
+			$this->db->where('Categoria_id_categoria', $categoria);
+		}
+
+		$tipos = array('0', '1', '5'); //PROMOCIONES PROPUESTAS Y PROMOCIONES PAYPAL
+
+		$this->db->where('fecha_fin_inscripcion >', $fecha_actual); // Muestra solo las activas
+		$this->db->where_in('tipo', $tipos); 
+
         $this->db->from('promocion');
 
 		$query = $this->db->get();

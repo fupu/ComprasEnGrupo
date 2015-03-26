@@ -43,6 +43,7 @@ class Comprasengrupoapi extends REST_Controller
 
     function promocionporcategoria_get()
     {   
+
         $this->load->model('service_model');
 
         $promociones = $this->service_model->getPromocionesporCategoria($this->get('categoria'));

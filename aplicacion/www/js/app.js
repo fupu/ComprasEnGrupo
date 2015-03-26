@@ -131,7 +131,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
       }
     })
     .state('tab.buscar-filtro-detalle-propuesta', {
-      url: '/buscar/filtro/propuesta/:id_promocion',
+      url: '/buscar/filtro/propuesta/:id_propuesta',
       views: {
         'tab-buscar': {
           templateUrl: 'templates/propuesta-detalle.html',
