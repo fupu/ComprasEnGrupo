@@ -13,7 +13,7 @@
          
   <div class="list">
     <a ng-repeat="subasta in subastas | filter:searchText" class="item item-thumbnail-left" href="#/tab/cuenta/subastas/{{subasta.id_promocion}}">
-      <img src="http://www.fupudev.com/comprasengrupo/ComprasEnGrupo/admin/uploads/{{subasta.imagen}}">
+      <img src="{{setUrl}}/uploads/{{subasta.imagen}}">
       <h2>{{subasta.producto}}</h2>
       <p>{{subasta.descripcion}}</p>
     </a>

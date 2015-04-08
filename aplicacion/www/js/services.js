@@ -27,9 +27,9 @@ $http.get('http://www.fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/
   }
 });
 
-var setUrl = "http://www.fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php";
+var setUrl = "http://www.fupudev.com/comprasengrupo/ComprasEnGrupo/admin";
 
-var urlService = setUrl+"/api/comprasengrupoapi";
+var urlService = setUrl+"/index.php/api/comprasengrupoapi";
 
 // GET HOME DATA    
 function getRecipeHome(){

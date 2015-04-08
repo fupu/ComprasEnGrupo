@@ -13,7 +13,7 @@
 
   <div class="list">
     <a ng-repeat="propuesta in propuestas | filter:searchText" class="item item-thumbnail-left" href="#/tab/propuestas/{{propuesta.id_promocion}}">
-      <img src="http://www.fupudev.com/comprasengrupo/ComprasEnGrupo/admin/uploads/{{propuesta.imagen}}">
+      <img src="{{setUrl}}/uploads/{{propuesta.imagen}}">
       <h2>{{propuesta.producto}}</h2>
       <p>{{propuesta.descripcion}}</p>
     </a>

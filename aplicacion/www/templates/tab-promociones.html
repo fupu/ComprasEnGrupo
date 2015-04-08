@@ -12,7 +12,7 @@
           </label>
   <div class="list"> 
     <a ng-repeat="promocion in promociones | filter:searchText" class="item item-thumbnail-left" href="#/tab/promociones/{{promocion.id_promocion}}">
-      <img src="http://www.fupudev.com/comprasengrupo/ComprasEnGrupo/admin/uploads/{{promocion.imagen}}">
+      <img src="{{setUrl}}/uploads/{{promocion.imagen}}">
       <h2>{{promocion.producto}}</h2>
       <p>{{promocion.descripcion}}</p>
       <p ng-show="promocion.tipo == 5">Opción de Pago con PayPal</p>

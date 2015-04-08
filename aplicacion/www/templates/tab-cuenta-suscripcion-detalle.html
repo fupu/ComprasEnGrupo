@@ -1,21 +1,22 @@
 <ion-view title="{{ promocion.producto }}">
   <ion-content has-header="true" padding="true">
   	<div class="card">
-      <img class="full-image"  src="http://www.fupudev.com/comprasengrupo/ComprasEnGrupo/admin/uploads/{{imagen.imagen}}">
+      <img class="full-image"  src="{{setUrl}}/uploads/{{imagen.imagen}}">
       <h2>{{promocion.producto}}</h2>
       <p>Descripción: {{promocion.descripcion}}</p>
       <p ng-show="promocion.observacion != null">Observaciones: {{promocion.observacion}}</p>
       <p>Fecha fin: {{promocion.fecha_fin_inscripcion}}</p>
     </div>
-    <div ng-show="promocion.tipo == 4" class="button-bar">
-    <h5>Contacta con el ganador de la subasta!</h5>
+    <h5 ng-show="promocion.tipo == 4">Contacta con el ganador de la subasta!</h5>
+    <div  ng-show="promocion.tipo == 4" class="button-bar">
       <a class="button icon ion-ios7-telephone" ng-href="tel:{{ promocion.telefono }}" target="_blank"></a>
-        <a class="button icon ion-ios7-email" href="mailto:{{ promocion.subasta_email_vendedor }}?subject=Compras En Grupo - {{promocion.producto}}" target="_blank"></a>
+        <a class="button icon ion-ios7-email" href="mailto:{{ promocion.Usuario_email }}?subject=Compras En Grupo - {{promocion.producto}}" target="_blank"></a>
       <!--<a href="mailto:{{promocion.email}}" class="icon ion-ios7-email"></a>-->
+
     </div>
 
     <div class="button-bar">
-    <button ng-click="borrarME(promocion.id_promocion);" class="button button-block button-assertive" >Borrar suscripción</button>
+    <button ng-click="borrarME(promocion.id_promocion);" class="button button-block button-assertive" >Borrar inscripción</button>
     </div>
   </ion-content>
 </ion-view>

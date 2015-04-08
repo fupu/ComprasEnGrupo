@@ -10,14 +10,19 @@ class Service_model extends CI_Model
 	
 	function getPromociones()
 	{
-		$fecha_actual = strtotime(date("d-m-Y H:i:00",time()));
+		//$fecha_actual = strtotime(date("d-m-Y H:i:00",time()));
+		$fecha_actual=date("Y-m-d H:i:s", strtotime("now"));
 
 		//$this->db->get('promocion');
 		$this->db->order_by('fecha_creacion', 'desc');
 		//$this->db->limit(5);
-		$this->db->where('fecha_fin_inscripcion <', $fecha_actual); // Muestra solo las activas
-		$this->db->where('tipo', '0 '); //PROMOCION
-		$this->db->or_where('tipo','5'); //PROMOCION CON PAYPAL
+		$this->db->where('fecha_fin_inscripcion >', $fecha_actual); // Muestra solo las activas
+		//$this->db->where('tipo', '0 '); //PROMOCION
+		//$this->db->or_where('tipo','5'); //PROMOCION CON PAYPAL
+
+		$tipos = array('0', '5'); //PROMOCIONES PROPUESTAS Y PROMOCIONES PAYPAL
+
+		$this->db->where_in('tipo', $tipos); 
 
 		$query = $this->db->get('promocion');
 

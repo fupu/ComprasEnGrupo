@@ -22,6 +22,8 @@ angular.module('starter.controllers', ['ngCordova'])
   };
 }])
 .controller('PropuestasCtrl', function($scope,$http) {
+    $scope.setUrl = setUrl;
+
     var url = urlService+'/propuestas';
   $http.get(url).
     success(function(data, status, headers, config) {
@@ -36,6 +38,7 @@ angular.module('starter.controllers', ['ngCordova'])
 .controller('PropuestaDetallesCtrl',function($scope,$http,$stateParams,inscribeME,authUsers){
 
     $scope.logedin = authUsers.isLoggedIn();
+    $scope.setUrl = setUrl;
 
     var url = urlService+'/propuesta/id_propuesta/'+$stateParams.id_propuesta;
     $http.get(url).
@@ -69,6 +72,8 @@ angular.module('starter.controllers', ['ngCordova'])
         $scope.urlCuenta = "cuenta/login"
 })
 .controller('PromocionesCtrl', function($scope, $http) {
+    $scope.setUrl = setUrl;
+
     var url = urlService+'/promociones';
   $http.get(url).
     success(function(data, status, headers, config) {
@@ -92,7 +97,7 @@ angular.module('starter.controllers', ['ngCordova'])
 .controller('PromocionDetallesCtrl',function($ionicLoading,$scope,$http,$stateParams,$rootScope,$timeout,$ionicModal,pagoPayPalPromocion,authUsers){
     
     $scope.logedin = authUsers.isLoggedIn(); //comprueba si es un usuairo autenticado
-
+    $scope.setUrl = setUrl;
     var url = urlService+'/promocion/id_promocion/'+$stateParams.id_promocion;
     $http.get(url).
     success(function(data, status, headers, config) {
@@ -116,7 +121,7 @@ $rootScope.paid = false;
 $scope.payWithPaypal = function(price) {
             
             $ionicLoading.show({
-                template: 'Loading...'
+                template: 'Cargando...'
             });
 
             /*
@@ -177,13 +182,14 @@ $scope.payWithPaypal = function(price) {
             "PayPalEnvironmentProduction": "YOUR_PRODUCTION_CLIENT_ID",
             "PayPalEnvironmentSandbox": "YOUR_SANDBOX_CLIENT_ID"
             };
+
             PayPalMobile.init(clientIDs, app.onPayPalMobileInit);
             
             },
             onSuccesfulPayment : function(payment) {
             // console.log("payment success: " + JSON.stringify(payment, null, 4));
             // document.getElementById("paypalStatus").innerHTML = "Payment received!";
-            pagoPayPalPromocion.pagoPayPalPromocion($scope.promocion.id_promocion);
+            pagoPayPalPromocion.pagoPayPalPromocion($scope.promocion.id_promocion); // envia al servidor pago OK
 
             $timeout(function() {
                 $rootScope.paid = true;
@@ -211,7 +217,7 @@ $scope.payWithPaypal = function(price) {
             },
             configuration : function () {
             // for more options see `paypal-mobile-js-helper.js`
-            var config = new PayPalConfiguration({merchantName: "Compras en Grupo", merchantPrivacyPolicyURL: "https://www.fupudev.com/policy", merchantUserAgreementURL: "https://www.fupudev.com/agreement"});
+            var config = new PayPalConfiguration({merchantName: "Compras en Grupo", merchantPrivacyPolicyURL: setUrl+"/index.php/policy", merchantUserAgreementURL: setUrl+"/index.php/agreement"});
             return config;
             },
             onPrepareRender : function() {
@@ -272,6 +278,7 @@ $scope.payWithPaypal = function(price) {
 })
 
 .controller('BuscarFiltroCtrl',function($scope,$http,$stateParams){
+    $scope.setUrl = setUrl;
     var url = urlService+'/promocionporcategoria/categoria/'+$stateParams.id_categoria;
     $http.get(url).
     success(function(data, status, headers, config) {
@@ -303,7 +310,7 @@ $scope.payWithPaypal = function(price) {
         login : function(user){
             return $http({
 
-                url: 'http://fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/comprasengrupoapi/loginUser/',
+                url: urlService+'/loginUser/',
                 method: "POST",
                  data:{'email':user.email,'password':SHA512(user.password)},
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
@@ -365,7 +372,7 @@ $scope.payWithPaypal = function(price) {
 //controlador home al que le añadimos la función de poder cerrar la sesión y pasamos
 //con $scope.email el email con el que ha iniciado sesión para saludarlo, para esto 
 //debemos inyectar las factorias sesionesControl y authUsers
-.controller("CuentaCtrl", function($scope, authUsers,$location,$ionicViewService){
+.controller("CuentaCtrl", function($scope, authUsers,$location,$ionicViewService,$http){
         if(!authUsers.isLoggedIn()) {
         $ionicViewService.nextViewOptions({
             disableAnimate: true,
@@ -373,7 +380,16 @@ $scope.payWithPaypal = function(price) {
         });
         $location.path("/tab/cuenta/login");
     }
-    $scope.email = window.localStorage.getItem("udp_email");
+    var urlusuario = urlService+'/user/email/'+window.localStorage.getItem("udp_email");
+    $http.get(urlusuario).
+        success(function(data, status, headers, config) {
+        $scope.usuario = data[0];
+            //$scope.encriptada = SHA512($scope.usuario.password);
+    }).
+    error(function(data, status, headers, config) {
+      // log error
+    });
+   // $scope.email = window.localStorage.getItem("udp_email");
     $scope.logout = function(){
         authUsers.logout();
     }
@@ -386,6 +402,7 @@ $scope.payWithPaypal = function(price) {
         });
         $location.path("/tab/cuenta/login");
     }
+    $scope.setUrl = setUrl;
     $scope.email = window.localStorage.getItem("udp_email");
     var url = urlService+'/subastas/';
     $http.get(url).
@@ -405,6 +422,8 @@ $scope.payWithPaypal = function(price) {
         });
         $location.path("/tab/cuenta/login");
     }
+    $scope.setUrl = setUrl;
+
     $scope.email = window.localStorage.getItem("udp_email");
     var url = urlService+'/subasta'+'/id_subasta/'+$stateParams.id_subasta;;
     $http.get(url).
@@ -489,6 +508,8 @@ $scope.payWithPaypal = function(price) {
 })
 .controller("CuentaSuscripciones", function($scope, authUsers,$http){
     //$scope.email = window.localStorage.getItem("udp_email");
+    $scope.setUrl = setUrl;
+
     var url = urlService+'/suscripciones/email/'+window.localStorage.getItem("udp_email");
     $http.get(url).
         success(function(data, status, headers, config) {
@@ -500,6 +521,8 @@ $scope.payWithPaypal = function(price) {
 })
 .controller("CuentaSuscripcionDetalle", function(borrarME,$scope, authUsers,$http,$stateParams){
     //$scope.email = window.localStorage.getItem("udp_email");
+    $scope.setUrl = setUrl;
+
     var url = urlService+'/promocion/id_promocion/'+$stateParams.id_promocion;
     $http.get(url).
     success(function(data, status, headers, config) {
@@ -625,7 +648,7 @@ $scope.payWithPaypal = function(price) {
 
         var ft = new FileTransfer();
         $ionicLoading.show({template: 'Se esta subiendo la foto...',duration:5000});
-        ft.upload(fileURL, encodeURI("http://www.fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/comprasengrupoapi/uploadPhotoo"), win, function(error) {$ionicLoading.show({template: 'Error de conexión...'});
+        ft.upload(fileURL, encodeURI(urlService+"/uploadPhotoo"), win, function(error) {$ionicLoading.show({template: 'Error de conexión...'});
         $ionicLoading.hide();}, options);
         function win(r) {
             $ionicLoading.show({template: 'Sa ha subido la promoción con exito...',duration:1000});
@@ -751,7 +774,7 @@ $scope.payWithPaypal = function(price) {
 
         var ft = new FileTransfer();
         $ionicLoading.show({template: 'Se esta subiendo la foto...',duration:5000});
-        ft.upload(fileURL, encodeURI("http://www.fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/comprasengrupoapi/uploadPhotooPropu"), win, function(error) {$ionicLoading.show({template: 'Error de conexión...'});
+        ft.upload(fileURL, encodeURI(urlService+"/uploadPhotooPropu"), win, function(error) {$ionicLoading.show({template: 'Error de conexión...'});
         $ionicLoading.hide();}, options);
         function win(r) {
             $ionicLoading.show({template: 'Sa ha subido la propuesta con exito...',duration:1000});
@@ -902,7 +925,7 @@ $scope.payWithPaypal = function(price) {
     return{
             borrarME : function (subastaID) {
             return $http({
-                url: 'http://fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/comprasengrupoapi/borrarME/',
+                url: urlService+'/borrarME/',
                 method: "POST",
                  data:{
                     'usuario':window.localStorage.getItem("udp_email"),
@@ -934,7 +957,7 @@ $scope.payWithPaypal = function(price) {
     return{
             inscribeME : function (propuestaID) {
             return $http({
-                url: 'http://fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/comprasengrupoapi/inscribeME/',
+                url: urlService+'/inscribeME/',
                 method: "POST",
                  data:{
                     'usuario':window.localStorage.getItem("udp_email"),
@@ -966,7 +989,7 @@ $scope.payWithPaypal = function(price) {
             anadirPromocion : function (promocion) {
                 //$scope.email = window.localStorage.getItem("udp_email");
             return $http({
-                url: 'http://fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/comprasengrupoapi/promociones/',
+                url: urlService+'/promociones/',
                 method: "POST",
                  data:{
                     'producto':promocion.producto,
@@ -1003,7 +1026,7 @@ $scope.payWithPaypal = function(price) {
     return{
             cambioPW : function (newpasswordencrypted,usuario) {
             return $http({
-                url: 'http://fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/comprasengrupoapi/cambioPW/',
+                url: urlService+'/cambioPW/',
                 method: "POST",
                  data:{
                     'email':usuario.email,
@@ -1033,7 +1056,7 @@ $scope.payWithPaypal = function(price) {
     return{
             pujar : function (telefono,cantidad,observacion,promocionID) {
             return $http({
-                url: 'http://fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/comprasengrupoapi/realizarPuja/',
+                url: urlService+'/realizarPuja/',
                 method: "POST",
                  data:{
                     'telefono':telefono,
@@ -1078,7 +1101,7 @@ $scope.payWithPaypal = function(price) {
     return{
             editUser : function (user) {
             return $http({
-                url: 'http://fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/comprasengrupoapi/updateUser/',
+                url: urlService+'/updateUser/',
                 method: "POST",
                  data:{
                     'email':user.email,
@@ -1118,7 +1141,7 @@ $scope.payWithPaypal = function(price) {
         pagoPayPalPromocion : function(promocion_id){
                 
             return $http({
-                url: 'http://fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/comprasengrupoapi/pagoPayPalPromocion/',
+                url: urlService+'/pagoPayPalPromocion/',
                 method: "POST",
                 data:{
                     'promocion_id':promocion_id,
@@ -1142,7 +1165,7 @@ $scope.payWithPaypal = function(price) {
                 //var Data = { user: user };
                 
             return $http({
-                url: 'http://fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/comprasengrupoapi/lostPassword/',
+                url: urlService+'/lostPassword/',
                 method: "POST",
                 //data : "email="+user.email+"&password="+"3"+"&nombre="+"3",
                //dataType: 'json',
@@ -1183,7 +1206,7 @@ $scope.payWithPaypal = function(price) {
         		//var Data = { user: user };
         		
             return $http({
-                url: 'http://fupudev.com/comprasengrupo/ComprasEnGrupo/admin/index.php/api/comprasengrupoapi/registroUsuario/',
+                url: urlService+'/registroUsuario/',
                 method: "POST",
                 //data : "email="+user.email+"&password="+"3"+"&nombre="+"3",
                //dataType: 'json',

@@ -1,14 +1,14 @@
 <ion-view title="{{ promocion.producto }}">
   <ion-content has-header="true" padding="true">
   	<div class="card">
-      <img class="full-image"  src="http://www.fupudev.com/comprasengrupo/ComprasEnGrupo/admin/uploads/{{imagen.imagen}}">
+      <img class="full-image"  src="{{setUrl}}/uploads/{{imagen.imagen}}">
       <h2>{{promocion.producto}}</h2>
       <p>Descripción: {{promocion.descripcion}}</p>
       <p>Tipo de envio: {{promocion.tipo_envio}}</p>
       <p ng-show="promocion.observacion != null">Observaciones: {{promocion.observacion}}</p>
       <p ng-show="promocion.compra_minima != null">Compra Minima: {{promocion.compra_minima}}</p>
       <p>Fecha fin: {{promocion.fecha_fin_inscripcion}}</p>
-      <p >Precio: {{promocion.precio}}</p>
+      <p >Precio: {{promocion.precio}} €</p>
     </div>
     <div class="button-bar">
     	<a class="button icon ion-ios7-telephone" ng-href="tel:{{ promocion.telefono }}" target="_blank"></a>

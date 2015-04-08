@@ -1,4 +1,4 @@
-<ion-view title="Mis Suscripciones">
+<ion-view title="Mis Inscripciones">
 <!--<ion-nav-buttons side="right">
       <button class="button button-clear button-clear" ng-click="logout()">
         Desconectar 
@@ -8,7 +8,7 @@
   <div class="list">
 
     <a href="#/tab/cuenta/suscripciondetalle/{{promocion.id_promocion}}" ng-repeat="promocion in promociones" class="item item-thumbnail-left" >
-      <img src="http://www.fupudev.com/comprasengrupo/ComprasEnGrupo/admin/uploads/{{promocion.imagen}}" >
+      <img src="{{setUrl}}/uploads/{{promocion.imagen}}" >
       <h2 ng-show="promocion.tipo == 4">Subasta finalizada</h2>
       <h2>{{promocion.producto}}</h2>
       <p>{{promocion.descripcion}}</p>
