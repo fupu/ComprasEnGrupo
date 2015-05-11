@@ -138,9 +138,10 @@ class Service_model extends CI_Model
 
 		/*$this->db->join('list', 'categoria.id_categoria = list.list_category_id','left');
         $this->db->group_by('category.category_name');*/
-		 
+		$this->db->order_by('categoria', 'asc');
+ 
 		$query = $this->db->get('categoria');
-		
+
 		$result = $query->result_array();
 		
 		return $result;
