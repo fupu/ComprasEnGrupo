@@ -277,7 +277,7 @@ class Comprasengrupoapi extends REST_Controller
             $this->response(array('error' => 'No hemos encontrado usuarios!'), 404);
         }
     }
-    //Esta función obtiene un usuario en concredo pasando el email como parametro
+    //Esta función obtiene un usuario en concreto pasando el email como parametro
 	function user_get()
     {
         $this->load->model('service_model');
@@ -471,6 +471,11 @@ class Comprasengrupoapi extends REST_Controller
             $upload = move_uploaded_file($_FILES["image"]["tmp_name"], $target_file);
             $fotoAnadida = $this->service_model->anadirFotoData($insert_id,$data);
             if($fotoAnadida == true){
+                $datos = array(
+                'usuario'        =>       $data['Usuario_email'],
+                'propuestaID'         =>      $insert_id
+                );
+                if($this->service_model->anadirInscripcion($datos) == true)// añado al usuario q ha creado la propuesta a su propia propuesta
                 echo json_encode(array("respuesta" => "success"));
             }
         }else{

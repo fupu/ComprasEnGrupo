@@ -220,6 +220,7 @@ class Service_model extends CI_Model
 		}
 		$this->db->from('lista_compra');
 		$this->db->join('promocion', 'promocion.id_promocion = lista_compra.Promocion_id_promocion');
+		$this->db->order_by('fecha_creacion', 'desc');
 
 		$query = $this->db->get();
 
@@ -243,11 +244,6 @@ class Service_model extends CI_Model
 		return $result;
 	}	
 	function getUser($email){
-		//$this->db->select('*');
-        //$this->db->from('usuario');
-
-		/*$this->db->join('list', 'categoria.id_categoria = list.list_category_id','left');
-        $this->db->group_by('category.category_name');*/
         if($email != 'undefined'){
 			$this->db->where('email', $email);
 		}

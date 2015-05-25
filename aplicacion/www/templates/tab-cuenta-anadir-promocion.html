@@ -2,16 +2,16 @@
   <ion-content class="padding">
 		<div class="list">
   			<label class="item item-input item-stacked-label">
-    			<span class="input-label">Producto</span>
-    			<input type="text" placeholder="Producto" ng-model="promocion.producto">
+    			<span class="input-label">Producto*</span>
+    			<input ng-required="true" type="text" placeholder="Producto" ng-model="promocion.producto">
   			</label>
   			<label class="item item-input item-stacked-label">
-    			<span class="input-label">Precio</span>
-    			<input type="text" placeholder="$$"  ng-model="promocion.precio">
+    			<span class="input-label">Precio*</span>
+    			<input ng-required="true" type="text" placeholder="$$"  ng-model="promocion.precio">
   			</label>
   			<label class="item item-input item-stacked-label">
-    			<span class="input-label">Descripción</span>
-    			<input type="text" placeholder="Breve descripción"  ng-model="promocion.descripcion">
+    			<span class="input-label">Descripción*</span>
+    			<input ng-required="true" type="text" placeholder="Breve descripción"  ng-model="promocion.descripcion">
   			</label>
 <!--<label class="item item-input item-stacked-label">Tipo de envio:</label>
     <select name="select-choice-1" id="select-choice-1" data-native-menu="false">
@@ -55,7 +55,7 @@
               </select>
             </label>
       <div class="row responsive-sm">
-        <img style="display:none;" id="image" src="" />
+        <img style="display:none;"  id="myImage" src="" />
             <img style="width:300px;heigh:300px"ng-show="imgURI !== undefined" ng-src="{{picData}}">
     <img ng-show="imgURI === undefined" ng-src="http://placehold.it/300x300">
     </div>

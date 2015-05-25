@@ -35,10 +35,26 @@ angular.module('starter.controllers', ['ngCordova'])
 })
 
 //Controlador de una propuesta en concreto.
-.controller('PropuestaDetallesCtrl',function($scope,$http,$stateParams,inscribeME,authUsers){
+.controller('PropuestaDetallesCtrl',function($scope,$http,$stateParams,inscribeME,authUsers,$ionicLoading){
 
     $scope.logedin = authUsers.isLoggedIn();
     $scope.setUrl = setUrl;
+    $scope.inscrito = false;
+
+    var url = urlService+'/suscripciones/email/'+window.localStorage.getItem("udp_email");
+    $http.get(url).
+        success(function(data, status, headers, config) {
+        $scope.promociones = data;
+        for(var i =0;i<data.length;i++){
+            if(data[i].id_promocion == $stateParams.id_propuesta){
+                $scope.inscrito = true;
+            }
+        }
+    }).
+    error(function(data, status, headers, config) {
+      // log error
+    });
+
 
     var url = urlService+'/propuesta/id_propuesta/'+$stateParams.id_propuesta;
     $http.get(url).
@@ -59,6 +75,7 @@ angular.module('starter.controllers', ['ngCordova'])
 
     $scope.inscribeME = function(propuestaID){
         inscribeME.inscribeME(propuestaID);
+        $scope.inscrito = true;
     }
 })
 
@@ -984,7 +1001,7 @@ $scope.payWithPaypal = function(price) {
 
     }
 })
-.factory("anadirPromociones",function($http,mensajesFlash,authUsers,$ionicViewService,$location){
+.factory("anadirPromociones",function($http,authUsers,$ionicViewService,$location){
     return{
             anadirPromocion : function (promocion) {
                 //$scope.email = window.localStorage.getItem("udp_email");

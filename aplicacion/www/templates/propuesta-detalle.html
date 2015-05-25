@@ -8,7 +8,12 @@
       <p>Fecha fin: {{propuesta.fecha_fin_inscripcion}}</p>
     </div>
     <div ng-show="logedin" class="button-bar">
+    <div ng-show="inscrito==false" class="button-bar">
     <button  ng-click="inscribeME(propuesta.id_promocion);" class="button button-block button-positive" >Inscríbeme</button>
+    </div>
+    <div ng-show="inscrito==true" class="button-bar">
+    <button  ng-click="" class="button button-block button-negative" >Ya estas inscrito!</button>
+    </div>
     </div>
     <h5 ng-show="!logedin">Necesitas registrarte para poder inscribirte en la propuesta.</h5>
   </ion-content>

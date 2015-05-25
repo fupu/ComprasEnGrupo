@@ -11,8 +11,8 @@
       <p >Precio: {{promocion.precio}} €</p>
     </div>
     <div class="button-bar">
-    	<a class="button icon ion-ios7-telephone" ng-href="tel:{{ promocion.telefono }}" target="_blank"></a>
-      	<a class="button icon ion-ios7-email" href="mailto:{{ promocion.Usuario_email }}?subject=Compras En Grupo - {{promocion.producto}}" target="_blank"></a>
+    	<a ng-show= "promocion.telefono != null" class="button icon ion-ios7-telephone" ng-href="tel:{{ promocion.telefono }}" target="_blank"></a>
+      	<a ng-show= "promocion.Usuario_email != null"class="button icon ion-ios7-email" ng-href="mailto:{{ promocion.Usuario_email }}?subject=Compras En Grupo - {{promocion.producto}}" target="_blank"></a>
       <!--<a href="mailto:{{promocion.email}}" class="icon ion-ios7-email"></a>-->
     </div>
     <div ng-show="promocion.tipo == 5">
